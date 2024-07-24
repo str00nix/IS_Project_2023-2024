@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using MusicStoreApplication.Domain.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,6 @@ namespace EShop.Domain.Identity
         public string? LastName { get; set; }
         public string? Address { get; set; }
         //public ShoppingCart? UserCart { get; set; }
-        //public virtual ICollection<Ticket>? MyProducts { get; set; }
+        public virtual ICollection<Playlist>? MyPlaylist { get; set; }
     }
 }
