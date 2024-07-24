@@ -8,5 +8,6 @@ namespace MusicStoreApplication.Domain.Domain
 {
     public class Artist
     {
+        public string? FullName { get; set; }
     }
 }
