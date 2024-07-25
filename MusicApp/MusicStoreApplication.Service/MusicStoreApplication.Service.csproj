@@ -7,11 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interface\" />
-    <Folder Include="Implementation\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\MusicStoreApplication.Domain\MusicStoreApplication.Domain.csproj" />
     <ProjectReference Include="..\MusicStoreApplication.Repository\MusicStoreApplication.Repository.csproj" />
   </ItemGroup>
