@@ -15,5 +15,6 @@ namespace MusicStoreApplication.Domain.Domain
         public ICollection<Artist>? Artists { get; set; }
         [Required]
         public Album? Album { get; set; }
+        public virtual ICollection<Playlist>? Playlists{ get; set; }
     }
 }
