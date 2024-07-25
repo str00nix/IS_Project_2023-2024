@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EShop.Domain.Identity
+namespace MusicStoreApplication.Domain.Identity
 {
     public class MusicApplicationUser : IdentityUser
     {
