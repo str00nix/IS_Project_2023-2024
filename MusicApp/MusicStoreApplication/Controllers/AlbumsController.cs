@@ -7,22 +7,24 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MusicStoreApplication.Repository;
 using MusicStoreApplication.Domain.Domain;
+using MusicStoreApplication.Service.Interface;
+using MusicStoreApplication.Service.Implementation;
 
 namespace MusicStoreApplication.Web.Controllers
 {
     public class AlbumsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IAlbumsService _albumsService;
 
-        public AlbumsController(ApplicationDbContext context)
+        public AlbumsController(IAlbumsService albumsService)
         {
-            _context = context;
+            _albumsService = albumsService;
         }
 
         // GET: Albums
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Albums.ToListAsync());
+            return View(_albumsService.GetAlbums());
         }
 
         // GET: Albums/Details/5
@@ -33,8 +35,7 @@ namespace MusicStoreApplication.Web.Controllers
                 return NotFound();
             }
 
-            var album = await _context.Albums
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var album = _albumsService.GetAlbumById((Guid)id);
             if (album == null)
             {
                 return NotFound();
@@ -59,8 +60,7 @@ namespace MusicStoreApplication.Web.Controllers
             if (ModelState.IsValid)
             {
                 album.Id = Guid.NewGuid();
-                _context.Add(album);
-                await _context.SaveChangesAsync();
+                _albumsService.CreateNewAlbum(album);
                 return RedirectToAction(nameof(Index));
             }
             return View(album);
@@ -74,7 +74,7 @@ namespace MusicStoreApplication.Web.Controllers
                 return NotFound();
             }
 
-            var album = await _context.Albums.FindAsync(id);
+            var album = _albumsService.GetAlbumById((Guid)id);
             if (album == null)
             {
                 return NotFound();
@@ -98,19 +98,18 @@ namespace MusicStoreApplication.Web.Controllers
             {
                 try
                 {
-                    _context.Update(album);
-                    await _context.SaveChangesAsync();
+                    _albumsService.UpdateNewAlbum(album);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AlbumExists(album.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
+                    //if (!AlbumExists(album.Id))
+                    //{
+                    //    return NotFound();
+                    //}
+                    //else
+                    //{
                         throw;
-                    }
+                    //}
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -125,8 +124,7 @@ namespace MusicStoreApplication.Web.Controllers
                 return NotFound();
             }
 
-            var album = await _context.Albums
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var album = _albumsService.GetAlbumById((Guid)id);
             if (album == null)
             {
                 return NotFound();
@@ -140,19 +138,13 @@ namespace MusicStoreApplication.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var album = await _context.Albums.FindAsync(id);
-            if (album != null)
-            {
-                _context.Albums.Remove(album);
-            }
-
-            await _context.SaveChangesAsync();
+            _albumsService.DeleteAlbum(id);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AlbumExists(Guid id)
-        {
-            return _context.Albums.Any(e => e.Id == id);
-        }
+        //private bool AlbumExists(Guid id)
+        //{
+        //    return _context.Albums.Any(e => e.Id == id);
+        //}
     }
 }
