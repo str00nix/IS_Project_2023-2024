@@ -1,5 +1,5 @@
 ﻿using MusicStoreApplication.Domain.Domain;
-using MusicStoreApplication.Repository.Interface;
+using MusicStoreApplication.IRepository.Interface;
 using MusicStoreApplication.Service.Interface;
 using System;
 using System.Collections.Generic;

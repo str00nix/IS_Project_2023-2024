@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MusicStoreApplication.Domain.Domain;
-using MusicStoreApplication.Repository;
+using MusicStoreApplication.IRepository;
 
 namespace MusicStoreApplication.Web.Controllers
 {

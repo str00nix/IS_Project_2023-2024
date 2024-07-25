@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MusicStoreApplication.Repository;
+using MusicStoreApplication.IRepository;
 using System;
 
 namespace MusicStoreApplication.Data.Migrations

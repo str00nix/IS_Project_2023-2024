@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using MusicStoreApplication.Repository;
+using MusicStoreApplication.IRepository;
 using MusicStoreApplication.Domain.Domain;
 using MusicStoreApplication.Service.Interface;
 using MusicStoreApplication.Service.Implementation;

@@ -1,9 +1,9 @@
 using MusicStoreApplication.Domain.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using MusicStoreApplication.Repository;
-using MusicStoreApplication.Repository.Implementation;
-using MusicStoreApplication.Repository.Interface;
+using MusicStoreApplication.IRepository;
+using MusicStoreApplication.IRepository.Implementation;
+using MusicStoreApplication.IRepository.Interface;
 using MusicStoreApplication.Service.Interface;
 using MusicStoreApplication.Service.Implementation;
 

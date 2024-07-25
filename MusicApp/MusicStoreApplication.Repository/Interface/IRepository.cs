@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MusicStoreApplication.Repository.Interface
+namespace MusicStoreApplication.IRepository.Interface
 {
     public interface IRepository<T> where T : BaseEntity
     {

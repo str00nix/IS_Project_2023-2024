@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MusicStoreApplication.Domain.Domain;
-using MusicStoreApplication.Repository.Interface;
+using MusicStoreApplication.IRepository.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MusicStoreApplication.Repository.Implementation
+namespace MusicStoreApplication.IRepository.Implementation
 {
     public class Repository<T> : IRepository<T> where T : BaseEntity
     {

@@ -1,4 +1,5 @@
 ﻿using MusicStoreApplication.Domain.Domain;
+using MusicStoreApplication.IRepository.Interface;
 using MusicStoreApplication.Service.Interface;
 using System;
 using System.Collections.Generic;
@@ -10,29 +11,36 @@ namespace MusicStoreApplication.Service.Implementation
 {
     public class ArtistService : IArtistService
     {
+        private readonly IRepository<Artist> _artistRepository;
+        public ArtistService(IRepository<Artist> artistRepository)
+        {
+            _artistRepository = artistRepository;
+        }
+
         public Artist CreateNewArtist(Artist artist)
         {
-            throw new NotImplementedException();
+            return _artistRepository.Insert(artist);
         }
 
         public Artist DeleteArtist(Guid id)
         {
-            throw new NotImplementedException();
+            Artist artist = _artistRepository.Get(id);
+            return _artistRepository.Delete(artist);
         }
 
         public Artist? GetArtistById(Guid id)
         {
-            throw new NotImplementedException();
+            return _artistRepository.Get(id);
         }
 
         public List<Artist> GetArtists()
         {
-            throw new NotImplementedException();
+            return _artistRepository.GetAll().ToList();
         }
 
         public Artist UpdateArtist(Artist artist)
         {
-            throw new NotImplementedException();
+            return _artistRepository.Update(artist);
         }
     }
 }
