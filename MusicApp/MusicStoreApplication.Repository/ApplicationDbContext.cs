@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MusicStoreApplication.Domain.Domain;
 
-namespace MusicStoreApplication.IRepository
+namespace MusicStoreApplication.Repository
 {
     public class ApplicationDbContext : IdentityDbContext<MusicApplicationUser>
     {
