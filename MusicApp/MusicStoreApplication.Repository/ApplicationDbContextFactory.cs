@@ -14,13 +14,8 @@ namespace IntegratedSystems.Repository
     {
         public ApplicationDbContext CreateDbContext(string[] args)
         {
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                .AddJsonFile("appsettings.json")
-                .Build();
-
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=aspnet-MusicStoreApplication-d0d04f0f-bdba-4ebb-b687-07c83d0942ac;Trusted_Connection=True;MultipleActiveResultSets=true");
 
             return new ApplicationDbContext(optionsBuilder.Options);
         }
