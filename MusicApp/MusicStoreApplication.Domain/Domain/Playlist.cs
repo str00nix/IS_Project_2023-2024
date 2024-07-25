@@ -1,5 +1,4 @@
-﻿using EShop.Domain.Domain;
-using MusicStoreApplication.Domain.Identity;
+﻿using MusicStoreApplication.Domain.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

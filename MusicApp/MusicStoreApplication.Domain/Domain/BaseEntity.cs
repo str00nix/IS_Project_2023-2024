@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EShop.Domain.Domain
+namespace MusicStoreApplication.Domain.Domain
 {
     public class BaseEntity
     {

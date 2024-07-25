@@ -1,7 +1,7 @@
 using MusicStoreApplication.Domain.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using MusicStoreApplication.Data;
+using MusicStoreApplication.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
