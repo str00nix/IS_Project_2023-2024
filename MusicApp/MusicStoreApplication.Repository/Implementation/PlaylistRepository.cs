@@ -37,5 +37,64 @@ namespace MusicStoreApplication.Repository.Implementation
                 .SingleOrDefaultAsync(z => z.Id == id).Result;
 
         }
+        
+        //TODO: All of the methods below should be changed according to the workflow of
+        //  - creating a new playlist
+        //  - deleting a new playlist
+        //  - adding a track to a playlist
+        //  - removing a track from a playlist
+        //This should be done alongside changes in PlaylistService
+        public IEnumerable<Playlist> GetAll()
+        {
+            return entities.AsEnumerable();
+        }
+
+        public Playlist Get(Guid? id)
+        {
+            return entities.First(s => s.Id == id);
+        }
+        public Playlist Insert(Playlist entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException("entity");
+            }
+            entities.Add(entity);
+            context.SaveChanges();
+            return entity;
+        }
+
+        public Playlist Update(Playlist entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException("entity");
+            }
+            entities.Update(entity);
+            context.SaveChanges();
+            return entity;
+        }
+
+        public Playlist Delete(Playlist entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException("entity");
+            }
+            entities.Remove(entity);
+            context.SaveChanges();
+            return entity;
+        }
+
+        public List<Playlist> InsertMany(List<Playlist> entities)
+        {
+            if (entities == null)
+            {
+                throw new ArgumentNullException("entities");
+            }
+            entities.AddRange(entities);
+            context.SaveChanges();
+            return entities;
+        }
     }
 }

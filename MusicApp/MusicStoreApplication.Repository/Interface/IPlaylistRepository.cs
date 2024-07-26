@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MusicStoreApplication.Repository.Interface
 {
-    public interface IPlaylistRepository
+    public interface IPlaylistRepository : IRepository<Playlist>
     {
         List<Playlist> GetAllPlaylists();
         Playlist GetDetailsForPlaylist(Guid id);
