@@ -1,4 +1,5 @@
 ﻿using MusicStoreApplication.Domain.Domain;
+using MusicStoreApplication.Repository.Interface;
 using MusicStoreApplication.Service.Interface;
 using System;
 using System.Collections.Generic;
@@ -10,29 +11,37 @@ namespace MusicStoreApplication.Service.Implementation
 {
     public class TrackService : ITrackService
     {
+        private readonly ITrackRepository _trackRepository;
+
+        public TrackService(ITrackRepository trackRepository)
+        {
+            _trackRepository = trackRepository;
+        }
+
         public Track CreateNewTrack(Track track)
         {
-            throw new NotImplementedException();
+            return _trackRepository.Insert(track);
         }
 
         public Track DeleteTrack(Guid id)
         {
-            throw new NotImplementedException();
+            Track track = _trackRepository.GetDetailsForTrack(id);
+            return _trackRepository.Delete(track);
         }
 
         public Track? GetTrackById(Guid id)
         {
-            throw new NotImplementedException();
+            return _trackRepository.GetDetailsForTrack(id);
         }
 
         public List<Track> GetTracks()
         {
-            throw new NotImplementedException();
+            return _trackRepository.GetAllTracks();
         }
 
         public Track UpdateTrack(Track track)
         {
-            throw new NotImplementedException();
+            return _trackRepository.Update(track);
         }
     }
 }

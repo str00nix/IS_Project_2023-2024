@@ -22,12 +22,13 @@ namespace MusicStoreApplication.Service.Implementation
 
         public Playlist CreateNewPlaylist(Playlist playlist)
         {
-            throw new NotImplementedException();
+            return _playlistRepository.Insert(playlist);
         }
 
         public Playlist DeletePlaylist(Guid id)
         {
-            throw new NotImplementedException();
+            Playlist playlist = _playlistRepository.Get(id);
+            return _playlistRepository.Delete(playlist);
         }
 
         public Playlist? GetPlayListById(Guid id)
@@ -42,7 +43,7 @@ namespace MusicStoreApplication.Service.Implementation
 
         public Playlist UpdatePlaylist(Playlist playlist)
         {
-            throw new NotImplementedException();
+            return _playlistRepository.Update(playlist);
         }
     }
 }

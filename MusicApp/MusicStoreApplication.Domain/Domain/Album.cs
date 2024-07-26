@@ -11,6 +11,6 @@ namespace MusicStoreApplication.Domain.Domain
     {
         [Required]
         public string? Name { get; set; }
-        public ICollection<Track>? tracks { get; set; }
+        public ICollection<Track>? Tracks { get; set; }
     }
 }

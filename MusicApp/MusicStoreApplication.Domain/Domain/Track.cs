@@ -13,7 +13,6 @@ namespace MusicStoreApplication.Domain.Domain
         public string? Name { get; set; }
         public string? Genre { get; set; }
         public ICollection<Artist>? Artists { get; set; }
-        //[Required]
         public Album? Album { get; set; }
         //public ICollection<Playlist>? Playlists { get; set; }
         public ICollection<TrackInPlaylist>? TracksInPlaylist { get; set; }
