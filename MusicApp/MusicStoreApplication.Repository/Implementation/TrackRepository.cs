@@ -29,12 +29,12 @@ namespace MusicStoreApplication.Repository.Implementation
                 .ToList();
         }
 
-        public Track GetDetailsForTrack(BaseEntity id)
+        public Track GetDetailsForTrack(Guid id)
         {
             return entities
                 .Include(z => z.Album)
                 .Include(z => z.Artists)
-                .SingleOrDefaultAsync(z => z.Id == id.Id).Result;
+                .SingleOrDefaultAsync(z => z.Id == id).Result;
         }
     }
 }

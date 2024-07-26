@@ -21,6 +21,8 @@ builder.Services.AddControllersWithViews();
 
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped(typeof(ITrackRepository), typeof(TrackRepository));
+builder.Services.AddScoped(typeof(IPlaylistRepository), typeof(PlaylistRepository));
 
 
 builder.Services.AddTransient<IAlbumsService, AlbumService>();

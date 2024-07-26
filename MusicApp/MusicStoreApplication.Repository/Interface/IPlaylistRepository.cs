@@ -10,6 +10,6 @@ namespace MusicStoreApplication.Repository.Interface
     public interface IPlaylistRepository
     {
         List<Playlist> GetAllPlaylists();
-        Playlist GetDetailsForPlaylist(BaseEntity id);
+        Playlist GetDetailsForPlaylist(Guid id);
     }
 }

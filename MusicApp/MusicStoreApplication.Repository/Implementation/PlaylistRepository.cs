@@ -28,13 +28,13 @@ namespace MusicStoreApplication.Repository.Implementation
                 .ToList();
         }
 
-        public Playlist GetDetailsForPlaylist(BaseEntity id)
+        public Playlist GetDetailsForPlaylist(Guid id)
         {
             return entities
                 .Include(z => z.TracksInPlaylist)
                 .Include(z => z.User)
                 .Include("TrackInPlaylist.Track")
-                .SingleOrDefaultAsync(z => z.Id == id.Id).Result;
+                .SingleOrDefaultAsync(z => z.Id == id).Result;
 
         }
     }

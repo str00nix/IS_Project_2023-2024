@@ -10,6 +10,6 @@ namespace MusicStoreApplication.Repository.Interface
     public interface ITrackRepository
     {
         List<Track> GetAllTracks();
-        Track GetDetailsForTrack(BaseEntity id);
+        Track GetDetailsForTrack(Guid id);
     }
 }

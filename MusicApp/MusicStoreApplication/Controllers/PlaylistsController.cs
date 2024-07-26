@@ -7,34 +7,42 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MusicStoreApplication.Domain.Domain;
 using MusicStoreApplication.Repository;
+using MusicStoreApplication.Repository.Interface;
+using MusicStoreApplication.Service.Interface;
 
 namespace MusicStoreApplication.Web.Controllers
 {
     public class PlaylistsController : Controller
     {
+        private readonly IPlaylistService _playlistService;
         private readonly ApplicationDbContext _context;
 
-        public PlaylistsController(ApplicationDbContext context)
+        public PlaylistsController(IPlaylistService playlistService, ApplicationDbContext context)
         {
+            _playlistService = playlistService;
             _context = context;
         }
+
 
         // GET: Playlists
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Playlists.ToListAsync());
+            //return View(await _context.Playlists.ToListAsync());
+            var result = _playlistService.GetPlaylists();
+            return View(result);
         }
 
         // GET: Playlists/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
-            if (id == null)
+            if (id == null || id == Guid.Empty)
             {
                 return NotFound();
             }
 
-            var playlist = await _context.Playlists
-                .FirstOrDefaultAsync(m => m.Id == id);
+            //var playlist = await _context.Playlists
+            //    .FirstOrDefaultAsync(m => m.Id == id);
+            var playlist = _playlistService.GetPlayListById((Guid)id);
             if (playlist == null)
             {
                 return NotFound();
