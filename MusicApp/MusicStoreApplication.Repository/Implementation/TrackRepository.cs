@@ -21,6 +21,21 @@ namespace MusicStoreApplication.Repository.Implementation
             entities = context.Set<Track>();
         }
 
+        public Track Delete(Track entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Track Get(Guid? id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Track> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
         public List<Track> GetAllTracks()
         {
             return entities
@@ -35,6 +50,21 @@ namespace MusicStoreApplication.Repository.Implementation
                 .Include(z => z.Album)
                 .Include(z => z.Artists)
                 .SingleOrDefaultAsync(z => z.Id == id).Result;
+        }
+
+        public Track Insert(Track entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Track> InsertMany(List<Track> entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Track Update(Track entity)
+        {
+            throw new NotImplementedException();
         }
     }
 }

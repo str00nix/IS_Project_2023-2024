@@ -11,9 +11,9 @@ namespace MusicStoreApplication.Service.Implementation
 {
     public class AlbumService : IAlbumsService
     {
-        private readonly IRepository<Album> _albumRepository;
+        private readonly IAlbumRepository _albumRepository;
 
-        public AlbumService(IRepository<Album> albumRepository)
+        public AlbumService(IAlbumRepository albumRepository)
         {
             _albumRepository = albumRepository;
         }

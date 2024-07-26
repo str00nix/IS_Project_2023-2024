@@ -30,12 +30,13 @@ namespace MusicStoreApplication.Repository.Implementation
 
         public Playlist GetDetailsForPlaylist(Guid id)
         {
-            return entities
-                .Include(z => z.TracksInPlaylist)
-                .Include(z => z.User)
-                .Include("TrackInPlaylist.Track")
+            var result = entities
+                .Include(p => p.User)
+                .Include(p => p.TracksInPlaylist).ThenInclude(tp => tp.Track)
+                //.Include("TrackInPlaylist.Track")
                 .SingleOrDefaultAsync(z => z.Id == id).Result;
 
+            return result;
         }
         
         //TODO: All of the methods below should be changed according to the workflow of
