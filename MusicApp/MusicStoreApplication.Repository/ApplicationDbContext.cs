@@ -15,5 +15,6 @@ namespace MusicStoreApplication.Repository
         public DbSet<Track> Tracks { get; set; }
         public DbSet<Artist> Artist { get; set; }
         public DbSet<Playlist> Playlists { get; set; }
+        public DbSet<TrackInPlaylist> TrackInPlaylist { get; set; }
     }
 }

@@ -10,8 +10,9 @@ namespace MusicStoreApplication.Domain.Domain
 {
     public class Playlist : BaseEntity
     {
-        [Required]
+        //public string? UserId { get; set; }
+        //[Required]
         public MusicApplicationUser? User { get; set; }
-        public ICollection<Track>? Tracks { get; set; }
+        public ICollection<TrackInPlaylist>? TracksInPlaylist { get; set; }
     }
 }
