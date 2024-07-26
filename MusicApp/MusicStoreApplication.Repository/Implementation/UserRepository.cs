@@ -13,7 +13,6 @@ namespace MusicStoreApplication.Repository.Implementation
     {
         private readonly ApplicationDbContext context;
         private DbSet<MusicApplicationUser> entities;
-        //string errorMessage = string.Empty;
 
         public UserRepository(ApplicationDbContext context)
         {
@@ -34,7 +33,7 @@ namespace MusicStoreApplication.Repository.Implementation
         public MusicApplicationUser Get(string id)
         {
             return entities
-                 .SingleOrDefault(z => z.Id == id);
+                 .SingleOrDefaultAsync(z => z.Id == id).Result;
         }
 
         public IEnumerable<MusicApplicationUser> GetAll()

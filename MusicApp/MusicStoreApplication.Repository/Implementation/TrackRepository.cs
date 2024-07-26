@@ -24,16 +24,16 @@ namespace MusicStoreApplication.Repository.Implementation
         public List<Track> GetAllTracks()
         {
             return entities
-                .Include(z => z.TracksInPlaylist)
                 .Include(z => z.Album)
+                .Include(z => z.Artists)
                 .ToList();
         }
 
         public Track GetDetailsForTrack(BaseEntity id)
         {
             return entities
-                .Include(z => z.TracksInPlaylist)
                 .Include(z => z.Album)
+                .Include(z => z.Artists)
                 .SingleOrDefaultAsync(z => z.Id == id.Id).Result;
         }
     }
