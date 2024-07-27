@@ -23,17 +23,23 @@ namespace MusicStoreApplication.Repository.Implementation
 
         public Track Delete(Track entity)
         {
-            throw new NotImplementedException();
+            if (entity == null)
+            {
+                throw new ArgumentNullException("entity");
+            }
+            entities.Remove(entity);
+            context.SaveChanges();
+            return entity;
         }
 
         public Track Get(Guid? id)
         {
-            throw new NotImplementedException();
+            return entities.First(s => s.Id == id);
         }
 
         public IEnumerable<Track> GetAll()
         {
-            throw new NotImplementedException();
+            return entities.AsEnumerable();
         }
 
         public List<Track> GetAllTracks()
@@ -54,17 +60,35 @@ namespace MusicStoreApplication.Repository.Implementation
 
         public Track Insert(Track entity)
         {
-            throw new NotImplementedException();
+            if (entity == null)
+            {
+                throw new ArgumentNullException("entity");
+            }
+            entities.Add(entity);
+            context.SaveChanges();
+            return entity;
         }
 
         public List<Track> InsertMany(List<Track> entities)
         {
-            throw new NotImplementedException();
+            if (entities == null)
+            {
+                throw new ArgumentNullException("entities");
+            }
+            entities.AddRange(entities);
+            context.SaveChanges();
+            return entities;
         }
 
         public Track Update(Track entity)
         {
-            throw new NotImplementedException();
+            if (entity == null)
+            {
+                throw new ArgumentNullException("entity");
+            }
+            entities.Update(entity);
+            context.SaveChanges();
+            return entity;
         }
     }
 }
