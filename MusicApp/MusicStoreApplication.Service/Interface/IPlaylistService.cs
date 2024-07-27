@@ -16,5 +16,6 @@ namespace MusicStoreApplication.Service.Interface
         public Playlist UpdatePlaylist(Playlist playlist);
         public Playlist DeletePlaylist(Guid id);
         public Playlist AddTrackToPlaylist(string playlistID, AddTrackToPlaylistDTO playlistDTO);
+        public Playlist RemoveTrackFromPlaylist(string playlistID, AddTrackToPlaylistDTO playlistDTO);
     }
 }

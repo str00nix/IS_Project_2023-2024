@@ -38,9 +38,6 @@ namespace MusicStoreApplication.Repository.Implementation
             return result;
         }
         
-        //TODO: All of the methods below should be changed according to the workflow of
-        //  - removing a track from a playlist
-        //This should be done alongside changes in PlaylistService
         public IEnumerable<Playlist> GetAll()
         {
             return entities.AsEnumerable();

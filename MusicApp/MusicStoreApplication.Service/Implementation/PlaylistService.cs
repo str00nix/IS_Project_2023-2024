@@ -77,8 +77,30 @@ namespace MusicStoreApplication.Service.Implementation
             }
 
             return null;
+        }
 
+        public Playlist RemoveTrackFromPlaylist(string playlistID, AddTrackToPlaylistDTO playlistDTO)
+        {
+            Guid? playlistGUID = new Guid(playlistID);
+            Playlist tempPlaylist = _playlistRepository.Get((Guid)playlistGUID);
+
+            if (tempPlaylist != null)
+            {
+                Track tempTrack = _trackRepository.Get(playlistDTO.TrackID);
+                if(tempTrack != null)
+                {
+                    var trackToRemove = tempPlaylist.TracksInPlaylist.FirstOrDefault(tp => tp.Track.Equals(tempTrack));
+                    if (trackToRemove != null) {
+                        tempPlaylist.TracksInPlaylist.Remove(trackToRemove);
+                    
+                        return _playlistRepository.Update(tempPlaylist);
+                    }
+                }
+            }
+
+            return null;
         }
 
     }
+    
 }
