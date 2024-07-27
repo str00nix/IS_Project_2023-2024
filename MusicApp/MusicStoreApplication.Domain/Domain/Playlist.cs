@@ -11,6 +11,7 @@ namespace MusicStoreApplication.Domain.Domain
     public class Playlist : BaseEntity
     {
         public MusicApplicationUser? User { get; set; }
+        public string? Name { get; set; }
         public ICollection<TrackInPlaylist>? TracksInPlaylist { get; set; }
     }
 }
