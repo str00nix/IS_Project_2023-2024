@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MusicStoreApplication.Domain.Domain;
+using MusicStoreApplication.Domain.DTO;
 using MusicStoreApplication.Repository;
 using MusicStoreApplication.Repository.Interface;
 using MusicStoreApplication.Service.Interface;
@@ -161,6 +162,16 @@ namespace MusicStoreApplication.Web.Controllers
         private bool PlaylistExists(Guid id)
         {
             return _context.Playlists.Any(e => e.Id == id);
+        }
+
+        // GET: Playlists/Delete/5
+        public async Task<IActionResult> AddTrackToPlaylistTest()
+        {
+            Guid trackId = new Guid("fe9e6cd1-cd62-4c0e-9e9c-5ceb8aa1b0bc");
+            var addTrackToPlaylistDto = new AddTrackToPlaylistDTO();
+            addTrackToPlaylistDto.TrackID = trackId;
+            _playlistService.AddTrackToPlaylist("6ad78f1a-cc96-44ba-a590-7617216f1b73", addTrackToPlaylistDto);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

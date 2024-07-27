@@ -32,11 +32,6 @@ namespace MusicStoreApplication.Repository.Implementation
             return entity;
         }
 
-        public Track Get(Guid? id)
-        {
-            return entities.First(s => s.Id == id);
-        }
-
         public IEnumerable<Track> GetAll()
         {
             return entities.AsEnumerable();
@@ -50,7 +45,7 @@ namespace MusicStoreApplication.Repository.Implementation
                 .ToList();
         }
 
-        public Track GetDetailsForTrack(Guid id)
+        public Track Get(Guid? id)
         {
             return entities
                 .Include(z => z.Album)

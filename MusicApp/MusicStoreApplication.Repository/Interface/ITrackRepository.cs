@@ -11,6 +11,5 @@ namespace MusicStoreApplication.Repository.Interface
     public interface ITrackRepository : IRepository<Track>
     {
         List<Track> GetAllTracks();
-        Track GetDetailsForTrack(Guid id);
     }
 }

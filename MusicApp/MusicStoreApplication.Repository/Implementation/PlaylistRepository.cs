@@ -28,31 +28,22 @@ namespace MusicStoreApplication.Repository.Implementation
                 .ToList();
         }
 
-        public Playlist GetDetailsForPlaylist(Guid id)
+        public Playlist Get(Guid? id)
         {
             var result = entities
                 .Include(p => p.User)
                 .Include(p => p.TracksInPlaylist).ThenInclude(tp => tp.Track)
-                //.Include("TrackInPlaylist.Track")
                 .SingleOrDefaultAsync(z => z.Id == id).Result;
 
             return result;
         }
         
         //TODO: All of the methods below should be changed according to the workflow of
-        //  - creating a new playlist
-        //  - deleting a new playlist
-        //  - adding a track to a playlist
         //  - removing a track from a playlist
         //This should be done alongside changes in PlaylistService
         public IEnumerable<Playlist> GetAll()
         {
             return entities.AsEnumerable();
-        }
-
-        public Playlist Get(Guid? id)
-        {
-            return entities.First(s => s.Id == id);
         }
         public Playlist Insert(Playlist entity)
         {

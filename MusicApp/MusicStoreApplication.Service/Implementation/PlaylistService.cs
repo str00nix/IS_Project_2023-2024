@@ -1,4 +1,5 @@
-﻿using MusicStoreApplication.Domain.Domain;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using MusicStoreApplication.Domain.Domain;
 using MusicStoreApplication.Domain.DTO;
 using MusicStoreApplication.Repository.Implementation;
 using MusicStoreApplication.Repository.Interface;
@@ -36,7 +37,7 @@ namespace MusicStoreApplication.Service.Implementation
 
         public Playlist? GetPlayListById(Guid id)
         {
-            return _playlistRepository.GetDetailsForPlaylist(id);
+            return _playlistRepository.Get(id);
         }
 
         public List<Playlist> GetPlaylists()
@@ -52,21 +53,26 @@ namespace MusicStoreApplication.Service.Implementation
         public Playlist AddTrackToPlaylist(string playlistID, AddTrackToPlaylistDTO playlistDTO)
         {
             Guid? playlistGUID = new Guid(playlistID);
-            Playlist tempPlaylist = _playlistRepository.Get(playlistGUID);
+            Playlist tempPlaylist = _playlistRepository.Get((Guid)playlistGUID);
 
-            if (tempPlaylist == null)
+            if (tempPlaylist != null)
             {
                 Track tempTrack = _trackRepository.Get(playlistDTO.TrackID);
                 if(tempTrack != null)
                 {
-                    tempPlaylist.TracksInPlaylist.Add(new TrackInPlaylist {
-                        TrackId = playlistDTO.TrackID,
-                        Track = tempTrack,
-                        PlaylistId = (Guid)playlistGUID,
-                        Playlist = tempPlaylist
-                    });
+                    //if (tempPlaylist.TracksInPlaylist.Where(tp => tp.Track.Equals(tempTrack)).ToList().Count() == 0)
+                    if (!tempPlaylist.TracksInPlaylist.Any(tp => tp.Track.Equals(tempTrack)))
+                    {
+                        tempPlaylist.TracksInPlaylist.Add(new TrackInPlaylist
+                        {
+                            TrackId = playlistDTO.TrackID,
+                            Track = tempTrack,
+                            PlaylistId = (Guid)playlistGUID,
+                            Playlist = tempPlaylist
+                        });
 
-                    return _playlistRepository.Update(tempPlaylist);
+                        return _playlistRepository.Update(tempPlaylist);
+                    }
                 }
             }
 

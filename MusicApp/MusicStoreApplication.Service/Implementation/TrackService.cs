@@ -25,13 +25,13 @@ namespace MusicStoreApplication.Service.Implementation
 
         public Track DeleteTrack(Guid id)
         {
-            Track track = _trackRepository.GetDetailsForTrack(id);
+            Track track = _trackRepository.Get(id);
             return _trackRepository.Delete(track);
         }
 
         public Track? GetTrackById(Guid id)
         {
-            return _trackRepository.GetDetailsForTrack(id);
+            return _trackRepository.Get(id);
         }
 
         public List<Track> GetTracks()
