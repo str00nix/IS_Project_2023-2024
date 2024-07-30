@@ -36,7 +36,7 @@ namespace MusicStoreApplication.Service.Implementation
 
         public List<Track> GetTracks()
         {
-            return _trackRepository.GetAllTracks();
+            return _trackRepository.GetAll().ToList();
         }
 
         public Track UpdateTrack(Track track)

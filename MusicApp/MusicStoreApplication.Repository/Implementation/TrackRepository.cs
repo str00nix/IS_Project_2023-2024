@@ -34,22 +34,16 @@ namespace MusicStoreApplication.Repository.Implementation
 
         public IEnumerable<Track> GetAll()
         {
-            return entities.AsEnumerable();
-        }
-
-        public List<Track> GetAllTracks()
-        {
             return entities
-                .Include(z => z.Album)
-                .Include(z => z.Artists)
-                .ToList();
+                .Include(t => t.Album)
+                .Include(t => t.Artists).ThenInclude(at => at.Artist);
         }
 
         public Track Get(Guid? id)
         {
             return entities
-                .Include(z => z.Album)
-                .Include(z => z.Artists)
+                .Include(t => t.Album)
+                .Include(t => t.Artists).ThenInclude(at => at.Artist)
                 .SingleOrDefaultAsync(z => z.Id == id).Result;
         }
 

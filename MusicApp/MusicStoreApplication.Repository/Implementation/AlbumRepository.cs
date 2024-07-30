@@ -43,7 +43,12 @@ namespace MusicStoreApplication.Repository.Implementation
 
         public IEnumerable<Album> GetAll()
         {
-            return entities.AsEnumerable();
+            // The includes are here so that we can see what 
+            var result = entities
+                .Include(a => a.Tracks).ThenInclude(t => t.Artists).ThenInclude(at => at.Artist)
+                .AsEnumerable();
+
+            return result;
         }
 
         public Album Insert(Album entity)

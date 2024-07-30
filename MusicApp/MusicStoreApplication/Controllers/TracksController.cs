@@ -7,22 +7,27 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MusicStoreApplication.Domain.Domain;
 using MusicStoreApplication.Repository;
+using MusicStoreApplication.Repository.Interface;
 
 namespace MusicStoreApplication.Web.Controllers
 {
     public class TracksController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ITrackRepository _trackRepository;
 
-        public TracksController(ApplicationDbContext context)
+        public TracksController(ITrackRepository trackRepository)
         {
-            _context = context;
+            _trackRepository = trackRepository;
         }
+
+
 
         // GET: Tracks
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Tracks.ToListAsync());
+            var tracks = _trackRepository.GetAll();
+
+            return View(tracks);
         }
 
         // GET: Tracks/Details/5
@@ -33,8 +38,7 @@ namespace MusicStoreApplication.Web.Controllers
                 return NotFound();
             }
 
-            var track = await _context.Tracks
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var track = _trackRepository.Get(id);
             if (track == null)
             {
                 return NotFound();
@@ -61,8 +65,7 @@ namespace MusicStoreApplication.Web.Controllers
             if (ModelState.IsValid)
             {
                 track.Id = Guid.NewGuid();
-                _context.Add(track);
-                await _context.SaveChangesAsync();
+                _trackRepository.Insert(track);
                 return RedirectToAction(nameof(Index));
             }
             return View(track);
@@ -77,7 +80,7 @@ namespace MusicStoreApplication.Web.Controllers
                 return NotFound();
             }
 
-            var track = await _context.Tracks.FindAsync(id);
+            var track = _trackRepository.Get(id);
             if (track == null)
             {
                 return NotFound();
@@ -102,8 +105,7 @@ namespace MusicStoreApplication.Web.Controllers
             {
                 try
                 {
-                    _context.Update(track);
-                    await _context.SaveChangesAsync();
+                    _trackRepository.Update(track);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -130,8 +132,7 @@ namespace MusicStoreApplication.Web.Controllers
                 return NotFound();
             }
 
-            var track = await _context.Tracks
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var track = _trackRepository.Get(id);
             if (track == null)
             {
                 return NotFound();
@@ -146,19 +147,18 @@ namespace MusicStoreApplication.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var track = await _context.Tracks.FindAsync(id);
+            var track = _trackRepository.Get(id);
             if (track != null)
             {
-                _context.Tracks.Remove(track);
+                _trackRepository.Delete(track);
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool TrackExists(Guid id)
         {
-            return _context.Tracks.Any(e => e.Id == id);
+            return _trackRepository.Get(id) != null;
         }
     }
 }
