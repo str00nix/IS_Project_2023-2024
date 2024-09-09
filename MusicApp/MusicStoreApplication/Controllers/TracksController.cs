@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,7 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MusicStoreApplication.Domain.Domain;
+using MusicStoreApplication.Domain.DTO;
 using MusicStoreApplication.Repository;
+using MusicStoreApplication.Repository.Implementation;
 using MusicStoreApplication.Repository.Interface;
 
 namespace MusicStoreApplication.Web.Controllers
@@ -14,12 +17,15 @@ namespace MusicStoreApplication.Web.Controllers
     public class TracksController : Controller
     {
         private readonly ITrackRepository _trackRepository;
+        private readonly IAlbumRepository _albumRepository;
+        private readonly IRepository<Artist> _artistRepository;
 
-        public TracksController(ITrackRepository trackRepository)
+        public TracksController(ITrackRepository trackRepository, IAlbumRepository albumRepository, IRepository<Artist> artistRepository)
         {
             _trackRepository = trackRepository;
+            _albumRepository = albumRepository;
+            _artistRepository = artistRepository;
         }
-
 
 
         // GET: Tracks
@@ -60,12 +66,22 @@ namespace MusicStoreApplication.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Genre,Id")] Track track)
+        public async Task<IActionResult> Create([Bind("Name,Genre,ArtistIds,AlbumId")] TrackDto trackDto)
         {
+            var track = new Track();
             if (ModelState.IsValid)
             {
-                track.Id = Guid.NewGuid();
-                _trackRepository.Insert(track);
+                track.Name = trackDto.Name;
+                track.Genre = trackDto.Genre;
+                track = _trackRepository.Insert(track);
+                track.Album = _albumRepository.Get(trackDto.AlbumId);
+                track.Artists = new List<ArtistOfTrack>();
+                foreach(Guid? artistId in trackDto.ArtistIds) {
+                    var trackArtist = new ArtistOfTrack();
+                    trackArtist.ArtistId = (Guid) artistId;
+                    trackArtist.Track = track;
+                }
+                _trackRepository.Update(track);
                 return RedirectToAction(nameof(Index));
             }
             return View(track);

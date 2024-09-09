@@ -1,4 +1,4 @@
-﻿@model MusicStoreApplication.Domain.Domain.Track
+﻿@model MusicStoreApplication.Domain.DTO.TrackDto
 
 @{
     ViewData["Title"] = "Create";
@@ -23,6 +23,24 @@
                 <span asp-validation-for="Genre" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="AlbumId" class="control-label"></label>
+            </div>
+            <div class="form-group">
+                <label asp-for="ArtistIds" class="control-label"></label>
+                <select id="example-getting-started" multiple="multiple" asp-for="ArtistIds" class="form-multi-select" id="ms1" multiple data-coreui-search="true">
+                    <option value="0">Angular</option>
+                    <option value="1">Bootstrap</option>
+                    <option value="2">React.js</option>
+                    <option value="3">Vue.js</option>
+                    <optgroup label="backend">
+                        <option value="4">Django</option>
+                        <option value="5">Laravel</option>
+                        <option value="6">Node.js</option>
+                    </optgroup>
+                </select>
+
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
@@ -32,6 +50,14 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+<script type="text/javascript">
+﻿document.addEventListener("DOMContentLoaded",
+    () => {
+
+        $('#example-getting-started').multiselect();
+    });
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
