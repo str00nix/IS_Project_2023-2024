@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MusicStoreApplication.Service.Implementation
@@ -63,6 +64,9 @@ namespace MusicStoreApplication.Service.Implementation
             while (reader.EndOfStream == false)
             {
                 var content = reader.ReadLine();
+
+                content = Regex.Replace(content, @",(?!(([^""]*""){2})*[^""]*$)", "，").Replace("\"\"", "\"");
+
                 try
                 {
                     if (!firstLine)
@@ -76,7 +80,7 @@ namespace MusicStoreApplication.Service.Implementation
 
                             List<string> artistNames = new List<string>(parts[0].Split(';'));
 
-                            string albumName = parts[1];
+                            string albumName = parts[1].Replace("，", ", ");
 
 
                         Album tempAlbum;
@@ -92,7 +96,7 @@ namespace MusicStoreApplication.Service.Implementation
                             tempAlbum = _albumRepository.GetAlbumByName(albumName);
                         }
 
-                            string trackName = parts[2];
+                            string trackName = parts[2].Replace("，", ", ");
 
                             double duration_ms = double.Parse(parts[3]);
 
