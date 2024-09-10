@@ -11,6 +11,7 @@ using MusicStoreApplication.Domain.DTO;
 using MusicStoreApplication.Repository;
 using MusicStoreApplication.Repository.Implementation;
 using MusicStoreApplication.Repository.Interface;
+using MusicStoreApplication.Service.Interface;
 
 namespace MusicStoreApplication.Web.Controllers
 {
@@ -19,12 +20,17 @@ namespace MusicStoreApplication.Web.Controllers
         private readonly ITrackRepository _trackRepository;
         private readonly IAlbumRepository _albumRepository;
         private readonly IRepository<Artist> _artistRepository;
+        private readonly ITrackService _trackService;
+        private readonly ILogger<TracksController> _logger;
 
-        public TracksController(ITrackRepository trackRepository, IAlbumRepository albumRepository, IRepository<Artist> artistRepository)
+        public TracksController(ITrackRepository trackRepository, IAlbumRepository albumRepository, IRepository<Artist> artistRepository, ITrackService trackService, ILogger<TracksController> logger)
         {
             _trackRepository = trackRepository;
             _albumRepository = albumRepository;
             _artistRepository = artistRepository;
+            _trackService = trackService;
+            _logger = logger;
+
         }
 
 
@@ -176,5 +182,30 @@ namespace MusicStoreApplication.Web.Controllers
         {
             return _trackRepository.Get(id) != null;
         }
+
+        //[HttpPost("import")]
+        [HttpPost, ActionName("Import")]
+        public async Task<IActionResult> ImportTransactionsFromCSV([FromForm] IFormFile formFile)
+        {
+            Console.WriteLine("Tracks controller import function called");
+            try
+            {
+                formFile = formFile ?? Request.Form.Files[0];
+                var result = _trackService.ImportTracks(formFile);
+
+                if (result == null)
+                {
+                    return StatusCode(500, "Error occured while importing tracks from inserted CSV file");
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Exception thrown during tracks import from CSV");
+                return StatusCode(500, "Exception thrown while importing tracks from inserted CSV file");
+            }
+        }
+
     }
 }

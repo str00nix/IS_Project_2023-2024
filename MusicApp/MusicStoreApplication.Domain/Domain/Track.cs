@@ -15,5 +15,6 @@ namespace MusicStoreApplication.Domain.Domain
         public ICollection<ArtistOfTrack>? Artists { get; set; }
         public Album? Album { get; set; }
         public ICollection<TrackInPlaylist>? TracksInPlaylist { get; set; }
+        public double? DurationInMilliseconds { get; set; }
     }
 }

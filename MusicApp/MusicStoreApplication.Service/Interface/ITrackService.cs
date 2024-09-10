@@ -1,4 +1,5 @@
-﻿using MusicStoreApplication.Domain.Domain;
+﻿using Microsoft.AspNetCore.Http;
+using MusicStoreApplication.Domain.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,6 @@ namespace MusicStoreApplication.Service.Interface
         public Track CreateNewTrack(Track track);
         public Track UpdateTrack(Track track);
         public Track DeleteTrack(Guid id);
+        public Task<bool> ImportTracks(IFormFile formFile);
     }
 }

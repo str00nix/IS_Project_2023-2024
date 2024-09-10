@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace MusicStoreApplication.Repository.Interface
 {
-    public interface IAlbumRepository : IRepository<Album>
+    public interface IArtistRepository : IRepository<Artist>
     {
-        //public List<Album> InsertMany(List<Album> entities);
-        public bool DoesAlbumExistByName(string name);
-        public Album GetAlbumByName(string name);
+        public bool DoesArtistExistByName(string name);
+        public Artist GetArtistByName(string name);
     }
 }

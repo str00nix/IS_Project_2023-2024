@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using MusicStoreApplication.Domain.Domain;
 using MusicStoreApplication.Repository.Interface;
 using System;
@@ -10,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace MusicStoreApplication.Repository.Implementation
 {
-    public class AlbumRepository : IAlbumRepository
+    public class ArtistRepository : IArtistRepository
     {
         private readonly ApplicationDbContext context;
-        private DbSet<Album> entities;
+        private DbSet<Artist> entities;
 
-        public AlbumRepository(ApplicationDbContext context)
+
+        public ArtistRepository(ApplicationDbContext context)
         {
             this.context = context;
-            entities = context.Set<Album>();
+            entities = context.Set<Artist>();
         }
-
-        public Album Delete(Album entity)
+        public Artist Delete(Artist entity)
         {
             if (entity == null)
             {
@@ -32,16 +31,14 @@ namespace MusicStoreApplication.Repository.Implementation
             return entity;
         }
 
-        public Album Get(Guid? id)
+        public Artist Get(Guid? id)
         {
-            var result = entities
-                .Include(a => a.Tracks).ThenInclude(t => t.Artists).ThenInclude(at => at.Artist)
-                .FirstOrDefaultAsync(z => z.Id == id).Result;
+            var result = entities.FirstOrDefaultAsync(z => z.Id == id).Result;
 
             return result;
         }
 
-        public bool DoesAlbumExistByName(string name)
+        public bool DoesArtistExistByName(string name)
         {
             var result = entities
                 .Any(a => a.Name == name);
@@ -49,17 +46,14 @@ namespace MusicStoreApplication.Repository.Implementation
             return result;
         }
 
-        public IEnumerable<Album> GetAll()
+        public IEnumerable<Artist> GetAll()
         {
-            // The includes are here so that we can see what 
-            var result = entities
-                .Include(a => a.Tracks).ThenInclude(t => t.Artists).ThenInclude(at => at.Artist)
-                .AsEnumerable();
+            var result = entities.AsEnumerable();
 
             return result;
         }
 
-        public Album Insert(Album entity)
+        public Artist Insert(Artist entity)
         {
             if (entity == null)
             {
@@ -70,7 +64,7 @@ namespace MusicStoreApplication.Repository.Implementation
             return entity;
         }
 
-        public List<Album> InsertMany(List<Album> entities)
+        public List<Artist> InsertMany(List<Artist> entities)
         {
             if (entities == null)
             {
@@ -81,7 +75,7 @@ namespace MusicStoreApplication.Repository.Implementation
             return entities;
         }
 
-        public Album Update(Album entity)
+        public Artist Update(Artist entity)
         {
             if (entity == null)
             {
@@ -91,7 +85,7 @@ namespace MusicStoreApplication.Repository.Implementation
             context.SaveChanges();
             return entity;
         }
-        public Album GetAlbumByName(string name) {
+        public Artist GetArtistByName(string name) {
             var result = entities
                 .FirstOrDefault(a => a.Name == name);
 
