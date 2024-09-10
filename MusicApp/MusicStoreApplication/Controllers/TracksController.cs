@@ -185,7 +185,7 @@ namespace MusicStoreApplication.Web.Controllers
 
         //[HttpPost("import")]
         [HttpPost, ActionName("Import")]
-        public async Task<IActionResult> ImportTransactionsFromCSV([FromForm] IFormFile formFile)
+        public async Task<IActionResult> ImportTracksFromCSV([FromForm] IFormFile formFile)
         {
             Console.WriteLine("Tracks controller import function called");
             try

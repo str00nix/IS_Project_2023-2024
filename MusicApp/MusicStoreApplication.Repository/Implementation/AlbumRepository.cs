@@ -51,7 +51,6 @@ namespace MusicStoreApplication.Repository.Implementation
 
         public IEnumerable<Album> GetAll()
         {
-            // The includes are here so that we can see what 
             var result = entities
                 .Include(a => a.Tracks).ThenInclude(t => t.Artists).ThenInclude(at => at.Artist)
                 .AsEnumerable();

@@ -59,97 +59,79 @@ namespace MusicStoreApplication.Service.Implementation
 
             using var reader = new StreamReader(formFile.OpenReadStream());
 
-            bool firstLine = true;
+            var content = reader.ReadLine();
             while (reader.EndOfStream == false)
             {
-                var content = reader.ReadLine();
+                content = reader.ReadLine();
                 //try
                 //{
-                    if (!firstLine)
+                var parts = content.Split(',').ToList();
+
+                if (parts.All(x => x.Length > 0))
+                {
+                    //artists,album_name,track_name,duration_ms,track_genre
+                    List<string> artistNames = new List<string>(parts[0].Split(';'));
+                    string albumName = parts[1];
+                    Album tempAlbum;
+                    if (!_albumRepository.DoesAlbumExistByName(albumName))
                     {
-                        var parts = content.Split(',').ToList();
-
-                        if (parts.All(x => x.Length > 0))
-                        {
-
-                            //artists,album_name,track_name,duration_ms,track_genre
-
-                            List<string> artistNames = new List<string>(parts[0].Split(';'));
-
-                            string albumName = parts[1];
-
-
-                        Album tempAlbum;
-                        if (!_albumRepository.DoesAlbumExistByName(albumName))
-                        {
-                            tempAlbum = new Album()
-                            {
-                                Name = albumName
-                            };
-                            tempAlbum = _albumRepository.Insert(tempAlbum);
-                        }
-                        else {
-                            tempAlbum = _albumRepository.GetAlbumByName(albumName);
-                        }
-
-                            string trackName = parts[2];
-
-                            double duration_ms = double.Parse(parts[3]);
-
-                            string genre = parts[4];
-
-                            Track tempTrack = new Track()
-                            {
-                                Name = trackName,
-                                Genre = genre,
-                                Album = tempAlbum,
-                                DurationInMilliseconds = duration_ms
-                            };
-
-                            artistNames.ForEach(name =>
-                            {
-                                if (name.Length > 0) {
-
-                                    Artist tempArtist;
-
-                                    if (!_artistRepository.DoesArtistExistByName(name))
-                                    {
-                                        tempArtist = new Artist()
-                                        {
-                                            Name = name
-                                        };
-                                        tempArtist = _artistRepository.Insert(tempArtist);
-                                    }
-                                    else {
-                                        tempArtist = _artistRepository.GetArtistByName(name);
-                                    }
-
-                                    ArtistOfTrack artistOfTrack = new ArtistOfTrack()
-                                    {
-                                        Artist = tempArtist,
-                                        ArtistId = tempArtist.Id,
-                                        Track = tempTrack,
-                                        TrackId = tempTrack.Id
-                                    };
-
-                                    artistOfTrack = _artistOfTrackRepository.Insert(artistOfTrack);
-
-                                    tempTrack.Artists.Add(artistOfTrack);
-                                }
-                            });
-
-                            //CreateNewTrack(tempTrack);
-                            tempTrack = _trackRepository.Insert(tempTrack);
-                        }
+                    tempAlbum = new Album()
+                    {
+                            Name = albumName
+                    };
+                    tempAlbum = _albumRepository.Insert(tempAlbum);
                     }
-                    firstLine = false;
-                //}
-                //catch (Exception ex)
-                //{
-                //    Console.WriteLine(content);
-                //    Console.WriteLine(ex.Message);
-                //    break;
-                //}
+                    else 
+                    {
+                        tempAlbum = _albumRepository.GetAlbumByName(albumName);
+                    }
+
+                    string trackName = parts[2];
+                    double duration_ms = double.Parse(parts[3]);
+                    string genre = parts[4];
+                    Track tempTrack = new Track()
+                    {
+                        Name = trackName,
+                        Genre = genre,
+                        Album = tempAlbum,
+                        DurationInMilliseconds = duration_ms
+                    };
+
+                    artistNames.ForEach(name =>
+                    {
+                        if (name.Length > 0) 
+                        {
+                            Artist tempArtist;
+                            if (!_artistRepository.DoesArtistExistByName(name))
+                            {
+                                tempArtist = new Artist()
+                                {
+                                    Name = name
+                                };
+                                tempArtist = _artistRepository.Insert(tempArtist);
+                            }
+                            else 
+                            {
+                                tempArtist = _artistRepository.GetArtistByName(name);
+                            }
+
+                            ArtistOfTrack artistOfTrack = new ArtistOfTrack()
+                            {
+                                Artist = tempArtist,
+                                ArtistId = tempArtist.Id,
+                                Track = tempTrack,
+                                TrackId = tempTrack.Id
+                            };
+
+                            artistOfTrack = _artistOfTrackRepository.Insert(artistOfTrack);
+
+                            tempTrack.Artists.Add(artistOfTrack);
+                        }
+                    });
+
+                    //CreateNewTrack(tempTrack);
+                    tempTrack = _trackRepository.Insert(tempTrack);
+                }
             }
 
             return true;
