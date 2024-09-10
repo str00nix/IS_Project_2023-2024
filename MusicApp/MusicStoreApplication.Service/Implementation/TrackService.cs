@@ -63,8 +63,8 @@ namespace MusicStoreApplication.Service.Implementation
             while (reader.EndOfStream == false)
             {
                 var content = reader.ReadLine();
-                //try
-                //{
+                try
+                {
                     if (!firstLine)
                     {
                         var parts = content.Split(',').ToList();
@@ -139,18 +139,18 @@ namespace MusicStoreApplication.Service.Implementation
                             });
 
                             //CreateNewTrack(tempTrack);
-                            tempTrack = _trackRepository.Insert(tempTrack);
+                            tempTrack = _trackRepository.Update(tempTrack);
                         }
                     }
                     firstLine = false;
-                //}
-                //catch (Exception ex)
-                //{
-                //    Console.WriteLine(content);
-                //    Console.WriteLine(ex.Message);
-                //    break;
-                //}
-            }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(content);
+                    Console.WriteLine(ex.Message);
+                    break;
+                }
+        }
 
             return true;
         }

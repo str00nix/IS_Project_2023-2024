@@ -185,13 +185,13 @@ namespace MusicStoreApplication.Web.Controllers
 
         //[HttpPost("import")]
         [HttpPost, ActionName("Import")]
-        public async Task<IActionResult> ImportTransactionsFromCSV([FromForm] IFormFile formFile)
+        public async Task<IActionResult> ImportTracksFromCSV([FromForm] IFormFile formFile)
         {
             Console.WriteLine("Tracks controller import function called");
             try
             {
                 formFile = formFile ?? Request.Form.Files[0];
-                var result = _trackService.ImportTracks(formFile);
+                var result = await _trackService.ImportTracks(formFile);
 
                 if (result == null)
                 {
