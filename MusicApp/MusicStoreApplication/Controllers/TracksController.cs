@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using MusicStoreApplication.Domain.Domain;
 using MusicStoreApplication.Domain.DTO;
@@ -36,7 +35,7 @@ namespace MusicStoreApplication.Web.Controllers
         public async Task<IActionResult> Index([FromQuery] string? searchString, [FromQuery] string[]? artistSelect, [FromQuery] int page = 1, [FromQuery] int pageSize = 15, [FromQuery] SortOrder sortOrder = SortOrder.Ascending, [FromQuery] string? sortBy = null)
         {
             
-            var tracks = _trackService.GetTracks(searchString, artistSelect, page, pageSize, sortOrder, sortBy);
+            var tracks = _trackService.GetTracksPaginated(searchString, artistSelect, page, pageSize, sortOrder, sortBy);
 
             var artists = _artistService.GetArtists();
 

@@ -91,10 +91,11 @@
             <th>Genre</th>
             <th>Artists</th>
             <th>Album</th>
+            <th>Duration</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Tracks) {
+@foreach (var item in Model.Tracks.Items) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -133,6 +134,17 @@
 					<span>None</span>
 				}
             </td>
+            <td>
+                    @if (item.DurationInMilliseconds != null)
+                    {
+                            TimeSpan t = TimeSpan.FromMilliseconds((double)item.DurationInMilliseconds);
+                        @String.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds)
+                    }
+                    else
+                    {
+                        <span>/</span>
+                    }
+                </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

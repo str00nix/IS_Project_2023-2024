@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Data.SqlClient;
 using MusicStoreApplication.Domain.Domain;
 using MusicStoreApplication.Domain.DTO;
 using System;
@@ -12,7 +11,8 @@ namespace MusicStoreApplication.Service.Interface
 {
     public interface ITrackService
     {
-        public List<Track> GetTracks(string? searchString = null, string[]? artistSelect = null, int page = 1, int pageSize = 15, SortOrder sortOrder = SortOrder.Ascending, string? sortBy = null);
+        public List<Track> GetTracks(string? searchString = null, string[]? artistSelect = null);
+        public PagedSortedList<Track> GetTracksPaginated(string? searchString = null, string[]? artistSelect = null, int page = 1, int pageSize = 15, MusicStoreApplication.Domain.Domain.SortOrder sortOrder = MusicStoreApplication.Domain.Domain.SortOrder.Ascending, string? sortBy = null);
         public Track? GetTrackById(Guid id);
         public Track CreateNewTrack(Track track);
         public Track UpdateTrack(Track track);

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Data.SqlClient;
 using MusicStoreApplication.Domain.Domain;
 using MusicStoreApplication.Domain.DTO;
 using MusicStoreApplication.Repository.Implementation;
@@ -11,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace MusicStoreApplication.Service.Implementation
 {
@@ -67,9 +67,10 @@ namespace MusicStoreApplication.Service.Implementation
             return _trackRepository.Get(id);
         }
 
-        public List<Track> GetTracks(string? searchString = null, string[]? artistSelect = null, int page = 1, int pageSize = 15, SortOrder sortOrder = SortOrder.Ascending, string? sortBy = null)
-        {
+        public List<Track> GetTracks(string? searchString = null, string[]? artistSelect = null) {
+            
             var tracks = _trackRepository.GetAll();
+
             if (searchString != null)
             {
                 tracks = tracks.Where(t => t.Name.ToLower().Contains(searchString.ToLower()));
@@ -81,6 +82,69 @@ namespace MusicStoreApplication.Service.Implementation
             }
 
             return tracks.ToList();
+        }
+
+        public PagedSortedList<Track> GetTracksPaginated(string? searchString = null, string[]? artistSelect = null, int page = 1, int pageSize = 15, SortOrder sortOrder = SortOrder.Ascending, string? sortBy = null)
+        {
+
+            var tracksQuery = _trackRepository.GetAll().AsQueryable();
+
+
+            if (searchString != null)
+            {
+                tracksQuery = tracksQuery.Where(t => t.Name.ToLower().Contains(searchString.ToLower()));
+            }
+
+            if (artistSelect != null && artistSelect.Length != 0)
+            {
+                tracksQuery = tracksQuery.Where(t => t.Artists.Where(at => artistSelect.Contains(at.Artist.Name)).Any());
+            }
+
+
+            var totalCount = tracksQuery.Count();
+            var totalPages = (int)Math.Ceiling(totalCount * 1.0 / pageSize);
+
+
+            if (!String.IsNullOrEmpty(sortBy))
+            {
+                switch (sortBy)
+                {
+                    case "Name":
+                        tracksQuery = sortOrder == SortOrder.Ascending ? tracksQuery.OrderBy(x => x.Name) : tracksQuery.OrderByDescending(x => x.Name);
+                        break;
+                    case "Artists":
+                        tracksQuery = sortOrder == SortOrder.Ascending ? tracksQuery.OrderBy(x => (x.Artists.Count() > 0 ? String.Join(", ", x.Artists.Select(at => at.Artist.Name)) : ""))
+                            : tracksQuery.OrderByDescending(x => (x.Artists.Count() > 0 ? String.Join(", ", x.Artists.Select(at => at.Artist.Name)) : ""));
+                        break;
+                    case "Genre":
+                        tracksQuery = sortOrder == SortOrder.Ascending ? tracksQuery.OrderBy(x => x.Genre) : tracksQuery.OrderByDescending(x => x.Genre);
+                        break;
+                    case "Album":
+                        tracksQuery = sortOrder == SortOrder.Ascending ? tracksQuery.OrderBy(x => x.Album) : tracksQuery.OrderByDescending(x => x.Album);
+                        break;
+                    case "Duration":
+                        tracksQuery = sortOrder == SortOrder.Ascending ? tracksQuery.OrderBy(x => x.DurationInMilliseconds) : tracksQuery.OrderByDescending(x => x.DurationInMilliseconds);
+                        break;
+                }
+            }
+            else
+            {
+                tracksQuery = tracksQuery.OrderBy(x => x.Name);
+            }
+            tracksQuery = tracksQuery.Skip((page - 1) * pageSize).Take(pageSize);
+
+            var tracks = tracksQuery.ToList();
+
+            return new PagedSortedList<Track>
+            {
+                TotalPages = totalPages,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize,
+                SortBy = sortBy,
+                SortOrder = sortOrder,
+                Items = tracks
+            };
         }
 
         public Track UpdateTrack(Track track)

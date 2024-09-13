@@ -5,10 +5,10 @@ namespace MusicStoreApplication.Web.Models
 {
     public class TrackIndexViewModel
     {
-        public IEnumerable<Track> Tracks;
+        public PagedSortedList<Track> Tracks;
         public IEnumerable<Artist> Artists;
 
-        public TrackIndexViewModel(IEnumerable<Track> tracks, IEnumerable<Artist> artists)
+        public TrackIndexViewModel(PagedSortedList<Track> tracks, IEnumerable<Artist> artists)
         {
             Tracks = tracks;
             Artists = artists;
@@ -16,7 +16,7 @@ namespace MusicStoreApplication.Web.Models
 
         public TrackIndexViewModel()
         {
-            Tracks = new List<Track>();
+            Tracks = new PagedSortedList<Track>();
             Artists = new List<Artist>();
         }
     }
