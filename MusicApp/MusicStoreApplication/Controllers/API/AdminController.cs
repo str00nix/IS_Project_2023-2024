@@ -25,7 +25,7 @@ namespace MusicStoreApplication.Web.Controllers.API
             return _trackService.GetTracks();
         }
         
-        [HttpPost, ActionName("ImportTracksFromCSV")]
+        [HttpPost("ImportTracksFromCSV")]
         public bool ImportTracksFromCSV(List<CSVLineDTO> model) {
             bool status = true;
 

@@ -27,11 +27,11 @@ namespace AdminApplication.Controllers
             HttpResponseMessage response = client.PostAsync(URL, content).Result;
             //var result = response.Content.ReadAsAsync<bool>().Result;
 
-            return RedirectToAction("Index", "Track");
+            return RedirectToAction("Index", "Home");
         }
 
         public List<CSVLineDTO> getAllTrackInfoFromCSVFile(IFormFile formFile) {
-            Console.WriteLine("Service method for track import called");
+            Console.WriteLine("Admin controller method for track import called");
 
             using var reader = new StreamReader(formFile.OpenReadStream());
 
