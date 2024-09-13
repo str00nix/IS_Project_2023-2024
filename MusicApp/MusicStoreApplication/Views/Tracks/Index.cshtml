@@ -110,19 +110,21 @@
 					int length = item.Artists.Count();
 					@foreach(var artist in item.Artists.Select(at => at.Artist))
 					{
-						@artist.Name
-                            @if (index != length)
+                            @if (index != length && artist.Name.Trim() != "")
                             {
-                                <span>,&nbsp</span>
+                                @(artist.Name + ", ")
                             }
-                        }
-                        index++;
-
+                            else
+                            {
+                                @artist.Name
+                            }
+                            index++;
                     }
-                    else
-                    {
-                        <span>None</span>
-                    }
+                }
+                else
+                {
+                    <span>None</span>
+                }
             </td>
             <td>
 				@if (item.Album != null)

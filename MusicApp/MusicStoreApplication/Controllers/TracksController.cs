@@ -69,7 +69,11 @@ namespace MusicStoreApplication.Web.Controllers
         // GET: Tracks/Create
         public IActionResult Create()
         {
-            return View();
+            var model = new TrackCreateViewModel();
+            model.Track = null;
+            model.Artists = _artistService.GetArtists();
+            model.Albums = _albumService.GetAlbums();
+            return View(model);
         }
 
         //TODO: This should be deleted in the final version 

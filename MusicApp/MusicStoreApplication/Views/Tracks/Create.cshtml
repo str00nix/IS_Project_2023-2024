@@ -1,4 +1,4 @@
-﻿@model MusicStoreApplication.Domain.DTO.TrackDto
+﻿@model MusicStoreApplication.Web.Models.TrackCreateViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -13,32 +13,30 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="TrackDto.Name" class="control-label"></label>
+                <input asp-for="TrackDto.Name" class="form-control" />
+                <span asp-validation-for="TrackDto.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Genre" class="control-label"></label>
-                <input asp-for="Genre" class="form-control" />
-                <span asp-validation-for="Genre" class="text-danger"></span>
+                <label asp-for="TrackDto.Genre" class="control-label"></label>
+                <input asp-for="TrackDto.Genre" class="form-control" />
+                <span asp-validation-for="TrackDto.Genre" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AlbumId" class="control-label"></label>
+                <label asp-for="TrackDto.AlbumId" class="control-label"></label>
             </div>
-            <div class="form-group">
-                <label asp-for="ArtistIds" class="control-label"></label>
-                <select id="example-getting-started" multiple="multiple" asp-for="ArtistIds" class="form-multi-select" id="ms1" multiple data-coreui-search="true">
-                    <option value="0">Angular</option>
-                    <option value="1">Bootstrap</option>
-                    <option value="2">React.js</option>
-                    <option value="3">Vue.js</option>
-                    <optgroup label="backend">
-                        <option value="4">Django</option>
-                        <option value="5">Laravel</option>
-                        <option value="6">Node.js</option>
-                    </optgroup>
-                </select>
-
+            <div class="form-group row ps-2">
+                <label asp-for="TrackDto.ArtistIds" class="col-form-label col-2">Artists:</label>
+                <div class="form-group col">
+                    <select asp-for="TrackDto.ArtistIds" id="artistSelect" class="selectpicker" multiple data-live-search="true">
+                        @foreach(var artist in Model.Artists)
+                        {
+                        <option value="@artist.Id">
+                            @artist.Name
+                        </option>
+                        }
+                    </select>
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -51,14 +49,19 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-<script type="text/javascript">
-﻿document.addEventListener("DOMContentLoaded",
-    () => {
-
-        $('#example-getting-started').multiselect();
-    });
-</script>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.9/js/bootstrap-select.min.js"></script>
+<script>
+
+    $('#searchForm').onsubmit = function () { 
+        console.log($('#artistSelect').val());
+    };
+
+        $('.selectpicker').selectpicker({
+      });
+</script>

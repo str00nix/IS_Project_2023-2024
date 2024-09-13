@@ -50,10 +50,9 @@ namespace MusicStoreApplication.Service.Implementation
                 var trackArtist = new ArtistOfTrack();
                 trackArtist.ArtistId = (Guid)artistId;
                 trackArtist.Track = tempTrack;
+                tempTrack.Artists.Add(trackArtist);
             }
-            _trackRepository.Update(tempTrack);
-
-            return _trackRepository.Insert(tempTrack);
+            return _trackRepository.Update(tempTrack);
         }
 
         public Track DeleteTrack(Guid id)
