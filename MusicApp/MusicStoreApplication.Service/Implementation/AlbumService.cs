@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MusicStoreApplication.Service.Implementation
 {
-    public class AlbumService : IAlbumsService
+    public class AlbumService : IAlbumService
     {
         private readonly IAlbumRepository _albumRepository;
 

@@ -27,7 +27,7 @@ builder.Services.AddScoped(typeof(IAlbumRepository), typeof(AlbumRepository));
 builder.Services.AddScoped(typeof(IArtistRepository), typeof(ArtistRepository));
 
 
-builder.Services.AddTransient<IAlbumsService, AlbumService>();
+builder.Services.AddTransient<IAlbumService, AlbumService>();
 builder.Services.AddTransient<IArtistService, ArtistService>();
 builder.Services.AddTransient<IPlaylistService, PlaylistService>();
 builder.Services.AddTransient<ITrackService, TrackService>();

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Data.SqlClient;
 using MusicStoreApplication.Domain.Domain;
+using MusicStoreApplication.Domain.DTO;
 using MusicStoreApplication.Repository.Implementation;
 using MusicStoreApplication.Repository.Interface;
 using MusicStoreApplication.Service.Interface;
@@ -32,6 +34,28 @@ namespace MusicStoreApplication.Service.Implementation
             return _trackRepository.Insert(track);
         }
 
+        public Track CreateNewTrackFromDTO(TrackDto trackDto)
+        {
+            var tempTrack = new Track() {
+                Name = trackDto.Name,
+                Genre = trackDto.Genre,
+                Album = _albumRepository.Get(trackDto.AlbumId),
+            };
+            
+            tempTrack = _trackRepository.Insert(tempTrack);
+
+            tempTrack.Artists = new List<ArtistOfTrack>();
+            foreach (Guid? artistId in trackDto.ArtistIds)
+            {
+                var trackArtist = new ArtistOfTrack();
+                trackArtist.ArtistId = (Guid)artistId;
+                trackArtist.Track = tempTrack;
+            }
+            _trackRepository.Update(tempTrack);
+
+            return _trackRepository.Insert(tempTrack);
+        }
+
         public Track DeleteTrack(Guid id)
         {
             Track track = _trackRepository.Get(id);
@@ -43,9 +67,20 @@ namespace MusicStoreApplication.Service.Implementation
             return _trackRepository.Get(id);
         }
 
-        public List<Track> GetTracks()
+        public List<Track> GetTracks(string? searchString = null, string[]? artistSelect = null, int page = 1, int pageSize = 15, SortOrder sortOrder = SortOrder.Ascending, string? sortBy = null)
         {
-            return _trackRepository.GetAll().ToList();
+            var tracks = _trackRepository.GetAll();
+            if (searchString != null)
+            {
+                tracks = tracks.Where(t => t.Name.ToLower().Contains(searchString.ToLower()));
+            }
+
+            if (artistSelect != null && artistSelect.Length != 0)
+            {
+                tracks = tracks.Where(t => t.Artists.Where(at => artistSelect.Contains(at.Artist.Name)).Any());
+            }
+
+            return tracks.ToList();
         }
 
         public Track UpdateTrack(Track track)

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MusicStoreApplication.Service.Interface
 {
-    public interface IAlbumsService
+    public interface IAlbumService
     {
         public List<Album> GetAlbums();
         public Album? GetAlbumById(Guid id);

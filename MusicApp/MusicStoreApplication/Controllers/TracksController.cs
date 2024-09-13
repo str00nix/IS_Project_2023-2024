@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using MusicStoreApplication.Domain.Domain;
 using MusicStoreApplication.Domain.DTO;
@@ -18,37 +19,26 @@ namespace MusicStoreApplication.Web.Controllers
 {
     public class TracksController : Controller
     {
-        private readonly ITrackRepository _trackRepository;
-        private readonly IAlbumRepository _albumRepository;
-        private readonly IRepository<Artist> _artistRepository;
         private readonly ITrackService _trackService;
+        private readonly IAlbumService _albumService;
+        private readonly IArtistService _artistService;
         private readonly ILogger<TracksController> _logger;
 
-        public TracksController(ITrackRepository trackRepository, IAlbumRepository albumRepository, IRepository<Artist> artistRepository, ITrackService trackService, ILogger<TracksController> logger)
+        public TracksController(ITrackService trackService, IAlbumService albumService, IArtistService artistService, ILogger<TracksController> logger)
         {
-            _trackRepository = trackRepository;
-            _albumRepository = albumRepository;
-            _artistRepository = artistRepository;
             _trackService = trackService;
+            _albumService = albumService;
+            _artistService = artistService;
             _logger = logger;
         }
 
-
         // GET: Tracks
-        public async Task<IActionResult> Index(string searchString, string[] artistSelect)
+        public async Task<IActionResult> Index([FromQuery] string? searchString, [FromQuery] string[]? artistSelect, [FromQuery] int page = 1, [FromQuery] int pageSize = 15, [FromQuery] SortOrder sortOrder = SortOrder.Ascending, [FromQuery] string? sortBy = null)
         {
-            var tracks = _trackRepository.GetAll();
-            if (searchString != null)
-            { 
-                tracks = tracks.Where(t => t.Name.ToLower().Contains(searchString.ToLower()));
-            }
+            
+            var tracks = _trackService.GetTracks(searchString, artistSelect, page, pageSize, sortOrder, sortBy);
 
-            if (artistSelect != null && artistSelect.Length != 0)
-            { 
-                tracks = tracks.Where(t => t.Artists.Where(at => artistSelect.Contains(at.Artist.Name)).Any());
-            }
-
-            var artists = _artistRepository.GetAll();
+            var artists = _artistService.GetArtists();
 
             var model = new TrackIndexViewModel(tracks, artists);
             return View(model);
@@ -62,7 +52,8 @@ namespace MusicStoreApplication.Web.Controllers
                 return NotFound();
             }
 
-            var track = _trackRepository.Get(id);
+            var track = _trackService.GetTrackById((Guid)id);
+
             if (track == null)
             {
                 return NotFound();
@@ -89,17 +80,7 @@ namespace MusicStoreApplication.Web.Controllers
             var track = new Track();
             if (ModelState.IsValid)
             {
-                track.Name = trackDto.Name;
-                track.Genre = trackDto.Genre;
-                track = _trackRepository.Insert(track);
-                track.Album = _albumRepository.Get(trackDto.AlbumId);
-                track.Artists = new List<ArtistOfTrack>();
-                foreach(Guid? artistId in trackDto.ArtistIds) {
-                    var trackArtist = new ArtistOfTrack();
-                    trackArtist.ArtistId = (Guid) artistId;
-                    trackArtist.Track = track;
-                }
-                _trackRepository.Update(track);
+                track = _trackService.CreateNewTrackFromDTO(trackDto);
                 return RedirectToAction(nameof(Index));
             }
             return View(track);
@@ -114,7 +95,7 @@ namespace MusicStoreApplication.Web.Controllers
                 return NotFound();
             }
 
-            var track = _trackRepository.Get(id);
+            var track = _trackService.GetTrackById((Guid)id);
             if (track == null)
             {
                 return NotFound();
@@ -139,7 +120,7 @@ namespace MusicStoreApplication.Web.Controllers
             {
                 try
                 {
-                    _trackRepository.Update(track);
+                    _trackService.UpdateTrack(track);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -166,7 +147,7 @@ namespace MusicStoreApplication.Web.Controllers
                 return NotFound();
             }
 
-            var track = _trackRepository.Get(id);
+            var track = _trackService.GetTrackById((Guid)id);
             if (track == null)
             {
                 return NotFound();
@@ -181,10 +162,10 @@ namespace MusicStoreApplication.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var track = _trackRepository.Get(id);
+            var track = _trackService.GetTrackById(id);
             if (track != null)
             {
-                _trackRepository.Delete(track);
+                _trackService.DeleteTrack(id);
             }
 
             return RedirectToAction(nameof(Index));
@@ -192,10 +173,9 @@ namespace MusicStoreApplication.Web.Controllers
 
         private bool TrackExists(Guid id)
         {
-            return _trackRepository.Get(id) != null;
+            return _trackService.GetTrackById(id) != null;
         }
 
-        //[HttpPost("import")]
         [HttpPost, ActionName("Import")]
         public async Task<IActionResult> ImportTracksFromCSV([FromForm] IFormFile formFile)
         {
@@ -214,7 +194,7 @@ namespace MusicStoreApplication.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Exception thrown during tracks import from CSV");
+                _logger.LogError(ex, "Exception thrown during track import from CSV");
                 return StatusCode(500, "Exception thrown while importing tracks from inserted CSV file");
             }
         }

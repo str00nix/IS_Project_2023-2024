@@ -13,9 +13,9 @@ namespace MusicStoreApplication.Web.Controllers
 {
     public class AlbumsController : Controller
     {
-        private readonly IAlbumsService _albumsService;
+        private readonly IAlbumService _albumsService;
 
-        public AlbumsController(IAlbumsService albumsService)
+        public AlbumsController(IAlbumService albumsService)
         {
             _albumsService = albumsService;
         }
