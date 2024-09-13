@@ -17,6 +17,7 @@ namespace MusicStoreApplication.Service.Interface
         public Track CreateNewTrack(Track track);
         public Track UpdateTrack(Track track);
         public Track DeleteTrack(Guid id);
+        public Task<bool> ExtractTracksFromCSVDTOs(List<CSVLineDTO> model);
         public Task<bool> ImportTracks(IFormFile formFile);
         public Track CreateNewTrackFromDTO(TrackDto trackDto);
     }

@@ -8,10 +8,10 @@ namespace AdminApplication.Models
 {
     public class CSVLineDTO
     {
-        List<string> ArtistNames { get; set; }
-        string AlbumName { get; set; }
-        string TrackName { get; set; }
-        double Duration_MS { get; set; }
-        string Genre { get; set; }
+        public List<string> ArtistNames { get; set; }
+        public string AlbumName { get; set; }
+        public string TrackName { get; set; }
+        public double Duration_MS { get; set; }
+        public string Genre { get; set; }
     }
 }

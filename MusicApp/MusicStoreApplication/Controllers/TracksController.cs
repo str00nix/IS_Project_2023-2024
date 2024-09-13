@@ -34,7 +34,11 @@ namespace MusicStoreApplication.Web.Controllers
         // GET: Tracks
         public async Task<IActionResult> Index([FromQuery] string? searchString, [FromQuery] string[]? artistSelect, [FromQuery] int page = 1, [FromQuery] int pageSize = 15, [FromQuery] SortOrder sortOrder = SortOrder.Ascending, [FromQuery] string? sortBy = null)
         {
-            
+
+            if (pageSize > 50) {
+                pageSize = 50;
+            }
+
             var tracks = _trackService.GetTracksPaginated(searchString, artistSelect, page, pageSize, sortOrder, sortBy);
 
             var artists = _artistService.GetArtists();

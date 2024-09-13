@@ -152,6 +152,71 @@ namespace MusicStoreApplication.Service.Implementation
             return _trackRepository.Update(track);
         }
 
+        public async Task<bool> ExtractTracksFromCSVDTOs(List<CSVLineDTO> model) {
+
+            foreach (var line in model)
+            {
+                Album tempAlbum;
+                if (!_albumRepository.DoesAlbumExistByName(line.AlbumName))
+                {
+                    tempAlbum = new Album()
+                    {
+                        Name = line.AlbumName
+                    };
+                    tempAlbum = _albumRepository.Insert(tempAlbum);
+                }
+                else
+                {
+                    tempAlbum = _albumRepository.GetAlbumByName(line.AlbumName);
+                }
+
+                Track tempTrack = new Track()
+                {
+                    Name = line.TrackName,
+                    Genre = line.Genre,
+                    Album = tempAlbum,
+                    DurationInMilliseconds = line.Duration_MS
+                };
+
+                line.ArtistNames.ForEach(name =>
+                {
+                    if (name.Length > 0)
+                    {
+
+                        Artist tempArtist;
+
+                        if (!_artistRepository.DoesArtistExistByName(name))
+                        {
+                            tempArtist = new Artist()
+                            {
+                                Name = name
+                            };
+                            tempArtist = _artistRepository.Insert(tempArtist);
+                        }
+                        else
+                        {
+                            tempArtist = _artistRepository.GetArtistByName(name);
+                        }
+
+                        ArtistOfTrack artistOfTrack = new ArtistOfTrack()
+                        {
+                            Artist = tempArtist,
+                            ArtistId = tempArtist.Id,
+                            Track = tempTrack,
+                            TrackId = tempTrack.Id
+                        };
+
+                        artistOfTrack = _artistOfTrackRepository.Insert(artistOfTrack);
+
+                        tempTrack.Artists.Add(artistOfTrack);
+                    }
+                });
+
+                //CreateNewTrack(tempTrack);
+                tempTrack = _trackRepository.Update(tempTrack);
+            }
+            return true;
+        }
 
         public async Task<bool> ImportTracks(IFormFile formFile)
         {
