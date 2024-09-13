@@ -1,29 +1,100 @@
-﻿@model IEnumerable<MusicStoreApplication.Domain.Domain.Track>
+﻿@model MusicStoreApplication.Web.Models.TrackIndexViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
+<script>
+    var showFilter = false;
+
+    function toggleShowFilter() { 
+        showFilter = !showFilter;
+        let filterButton = document.getElementById("showFilterButton");
+        let filters = document.getElementById("filters");
+        if (showFilter) {
+            filterButton.innerHTML = "Hide Filters <i class='fa-solid fa-chevron-up'></i>";
+            filters.hidden = false;
+        }
+        else 
+        {
+            filterButton.innerHTML = "Show Filters <i class='fa-solid fa-chevron-down'></i>";
+            filters.hidden = true;
+        }
+    }
+</script>
+
 
 <h1>Index</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+<form id="searchForm" class="container">
+    <div class="row form-group">
+        <div class="col col-lg-9 col-md-8 col-sm-7 p-0">
+            <input class="form-control rounded-0" name="searchString" 
+                type="search" placeholder="Search..." aria-label="Search" />
+        </div>
+        <div class="col col-lg-3 col-md-4 col-sm-5 p-0">
+            <button onclick="toggleShowFilter()" class="btn btn-secondary btn-block w-100 rounded-0" type="button" id="showFilterButton">
+                Show Filters
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="filters" hidden>
+        <div class="row mt-2">
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="genreInput" class="col-2 col-form-label">Genre:</label>
+                    <div class="col">
+                    <input class="form-control rounded-0" name="genreInput" 
+                        type="search" placeholder="Genre..." aria-label="Search" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row ps-2">
+                    <label for="artistSelection" class="col-form-label col-2">Artists:</label>
+                    <div class="form-group col">
+                        <select id="artistSelect" name="artistSelect" class="selectpicker" multiple data-live-search="true">
+                            @foreach(var artist in Model.Artists)
+                            {
+                            <option value="@artist.Name">
+                                @artist.Name
+                            </option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-0 mt-2">
+        <div class="col col-lg-9 col-md-8 col-sm-7 p-0">
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-5 p-0">
+            <button class="btn btn-dark btn-block w-100 rounded-0" type="submit">
+                Search <i class="fas fa-search"></i>
+            </button>
+        </div>
+    <div/>
+
+</form>
+
+
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Genre)
-            </th>
+            <th>Track Name</th>
+            <th>Genre</th>
             <th>Artists</th>
             <th>Album</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Tracks) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -71,3 +142,17 @@
 }
     </tbody>
 </table>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.9/js/bootstrap-select.min.js"></script>
+<script>
+
+    $('#searchForm').onsubmit = function () { 
+        console.log($('#artistSelect').val());
+    };
+
+        $('.selectpicker').selectpicker({
+      });
+</script>

@@ -6,8 +6,18 @@
     <title>@ViewData["Title"] - MusicStoreApplication</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-multiselect.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-select.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MusicStoreApplication.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/font-awesome/css/all.css"/>
+
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.9/css/bootstrap-select.css" />
+    <style>	
+        .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn){
+            width:100%;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -19,7 +29,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav navbar-left flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>

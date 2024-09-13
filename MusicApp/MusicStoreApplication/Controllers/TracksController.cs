@@ -12,6 +12,7 @@ using MusicStoreApplication.Repository;
 using MusicStoreApplication.Repository.Implementation;
 using MusicStoreApplication.Repository.Interface;
 using MusicStoreApplication.Service.Interface;
+using MusicStoreApplication.Web.Models;
 
 namespace MusicStoreApplication.Web.Controllers
 {
@@ -30,16 +31,27 @@ namespace MusicStoreApplication.Web.Controllers
             _artistRepository = artistRepository;
             _trackService = trackService;
             _logger = logger;
-
         }
 
 
         // GET: Tracks
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, string[] artistSelect)
         {
             var tracks = _trackRepository.GetAll();
+            if (searchString != null)
+            { 
+                tracks = tracks.Where(t => t.Name.ToLower().Contains(searchString.ToLower()));
+            }
 
-            return View(tracks);
+            if (artistSelect != null && artistSelect.Length != 0)
+            { 
+                tracks = tracks.Where(t => t.Artists.Where(at => artistSelect.Contains(at.Artist.Name)).Any());
+            }
+
+            var artists = _artistRepository.GetAll();
+
+            var model = new TrackIndexViewModel(tracks, artists);
+            return View(model);
         }
 
         // GET: Tracks/Details/5
