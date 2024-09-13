@@ -155,6 +155,33 @@
     </tbody>
 </table>
 
+<nav aria-label="Page navigation example" class="d-flex justify-content-center">
+  <ul class="pagination">
+    @if (Model.Tracks.Page > 1)
+    {
+        <li class="page-item"><a class="page-link" href="?&page=@(Model.Tracks.Page - 1)">Previous</a></li>
+    }
+    @{
+        var start = Model.Tracks.Page < 5 ? 1 : Model.Tracks.Page - 4;
+        var end = Model.Tracks.TotalPages - Model.Tracks.Page < 5 ? Model.Tracks.TotalPages : Model.Tracks.Page + 4;
+    }
+    @for (int i = start; i < end; i++)
+    {
+            @if (i == Model.Tracks.Page)
+            {
+                <li class="page-item active"><a class="page-link" href="?&page=@i">@i</a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" href="?&page=@i">@i</a></li>
+            }
+    }
+    @if (Model.Tracks.Page < Model.Tracks.TotalPages)
+    {
+        <li class="page-item"><a class="page-link" href="?&page=@(Model.Tracks.Page + 1)">Next</a></li>
+    }
+  </ul>
+</nav>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
