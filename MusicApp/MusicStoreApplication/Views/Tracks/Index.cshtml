@@ -101,7 +101,7 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @String.Join(", ", item.Genres.Select(g => g.Name));
+                @(String.Join(", ", item.Genres.Select(g => g.Genre != null ? g.Genre.Name : "")).Replace(";", ""))
             </td>
             <td>
 				@if (item.Artists != null && item.Artists.Count() > 0)

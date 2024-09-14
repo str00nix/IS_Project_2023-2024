@@ -37,7 +37,7 @@ namespace MusicStoreApplication.Repository.Implementation
             return entities
                 .Include(t => t.Album)
                 .Include(t => t.Artists).ThenInclude(at => at.Artist)
-                .Include(t => t.Genres);
+                .Include(t => t.Genres).ThenInclude(gt => gt.Genre);
         }
 
         public Track Get(Guid? id)
@@ -45,6 +45,7 @@ namespace MusicStoreApplication.Repository.Implementation
             return entities
                 .Include(t => t.Album)
                 .Include(t => t.Artists).ThenInclude(at => at.Artist)
+                .Include(t => t.Genres).ThenInclude(gt => gt.Genre)
                 .SingleOrDefaultAsync(z => z.Id == id).Result;
         }
 
