@@ -36,7 +36,8 @@ namespace MusicStoreApplication.Repository.Implementation
         {
             return entities
                 .Include(t => t.Album)
-                .Include(t => t.Artists).ThenInclude(at => at.Artist);
+                .Include(t => t.Artists).ThenInclude(at => at.Artist)
+                .Include(t => t.Genres);
         }
 
         public Track Get(Guid? id)

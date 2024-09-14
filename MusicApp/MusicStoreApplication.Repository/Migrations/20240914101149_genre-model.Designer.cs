@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MusicStoreApplication.Repository;
 
@@ -11,9 +12,11 @@ using MusicStoreApplication.Repository;
 namespace MusicStoreApplication.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240914101149_genre-model")]
+    partial class genremodel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -212,16 +215,7 @@ namespace MusicStoreApplication.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("TrackId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("TrackId");
 
                     b.ToTable("Genre");
                 });
@@ -257,6 +251,9 @@ namespace MusicStoreApplication.Data.Migrations
                     b.Property<double?>("DurationInMilliseconds")
                         .HasColumnType("float");
 
+                    b.Property<Guid?>("GenreId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -264,6 +261,8 @@ namespace MusicStoreApplication.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AlbumId");
+
+                    b.HasIndex("GenreId");
 
                     b.ToTable("Tracks");
                 });
@@ -433,13 +432,6 @@ namespace MusicStoreApplication.Data.Migrations
                     b.Navigation("Track");
                 });
 
-            modelBuilder.Entity("MusicStoreApplication.Domain.Domain.Genre", b =>
-                {
-                    b.HasOne("MusicStoreApplication.Domain.Domain.Track", null)
-                        .WithMany("Genres")
-                        .HasForeignKey("TrackId");
-                });
-
             modelBuilder.Entity("MusicStoreApplication.Domain.Domain.Playlist", b =>
                 {
                     b.HasOne("MusicStoreApplication.Domain.Identity.MusicApplicationUser", "User")
@@ -455,7 +447,13 @@ namespace MusicStoreApplication.Data.Migrations
                         .WithMany("Tracks")
                         .HasForeignKey("AlbumId");
 
+                    b.HasOne("MusicStoreApplication.Domain.Domain.Genre", "Genre")
+                        .WithMany()
+                        .HasForeignKey("GenreId");
+
                     b.Navigation("Album");
+
+                    b.Navigation("Genre");
                 });
 
             modelBuilder.Entity("MusicStoreApplication.Domain.Domain.TrackInPlaylist", b =>
@@ -495,8 +493,6 @@ namespace MusicStoreApplication.Data.Migrations
             modelBuilder.Entity("MusicStoreApplication.Domain.Domain.Track", b =>
                 {
                     b.Navigation("Artists");
-
-                    b.Navigation("Genres");
 
                     b.Navigation("TracksInPlaylist");
                 });

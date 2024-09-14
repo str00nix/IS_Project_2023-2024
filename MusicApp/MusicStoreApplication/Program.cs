@@ -32,6 +32,7 @@ builder.Services.AddTransient<IAlbumService, AlbumService>();
 builder.Services.AddTransient<IArtistService, ArtistService>();
 builder.Services.AddTransient<IPlaylistService, PlaylistService>();
 builder.Services.AddTransient<ITrackService, TrackService>();
+builder.Services.AddTransient<IGenreService, GenreService>();
 
 
 var app = builder.Build();

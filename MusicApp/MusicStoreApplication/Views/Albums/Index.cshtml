@@ -90,10 +90,10 @@
 
 <div class="row">
     <div class="col btn-group btn-group-toggle m-2" data-toggle="buttons">
-      <button onclick="SwitchViewList()" class="btn btn-secondary active">
+      <button onclick="SwitchViewGrid()" class="btn btn-secondary active">
           <i class="fa-solid fa-table"></i>
       </button>
-      <button onclick="SwitchViewGrid()" class="btn btn-secondary">
+      <button onclick="SwitchViewList()" class="btn btn-secondary">
         <i class="fa-solid fa-list"></i>
       </button>
     </div>
@@ -126,9 +126,11 @@
                         <h6 class="text-muted pe-1">
                             @(String.Join(", ", album.Tracks.SelectMany(t => t.Artists.Select(at => at.Artist.Name)).ToHashSet()) + " | ")
                             <span>
-                                @foreach (var genre in album.Tracks.Select(t => t.Genre))
+                                @foreach (var genres in album.Tracks.Select(t => t.Genres))
                                 {
-                                 <span>@genre</span>
+                                 <span>
+                                     @(String.Join(", ", genres))
+                                 </span>
                                 }
                             </span>
                         </h6>

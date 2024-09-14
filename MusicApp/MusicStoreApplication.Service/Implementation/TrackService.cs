@@ -20,13 +20,21 @@ namespace MusicStoreApplication.Service.Implementation
         private readonly IAlbumRepository _albumRepository;
         private readonly IArtistRepository _artistRepository;
         private readonly IRepository<ArtistOfTrack> _artistOfTrackRepository;
+        private readonly IRepository<Genre> _genreRepository;
 
-        public TrackService(ITrackRepository trackRepository, IAlbumRepository albumRepository, IArtistRepository artistRepository, IRepository<ArtistOfTrack> artistOfTrackRepository)
+        public TrackService(
+            ITrackRepository trackRepository,
+            IAlbumRepository albumRepository,
+            IArtistRepository artistRepository,
+            IRepository<ArtistOfTrack> artistOfTrackRepository,
+            IRepository<Genre> genreRepository
+        )
         {
             _trackRepository = trackRepository;
             _albumRepository = albumRepository;
             _artistRepository = artistRepository;
             _artistOfTrackRepository = artistOfTrackRepository;
+            _genreRepository = genreRepository;
         }
 
         public Track CreateNewTrack(Track track)
@@ -36,9 +44,18 @@ namespace MusicStoreApplication.Service.Implementation
 
         public Track CreateNewTrackFromDTO(TrackDto trackDto)
         {
+            List<Genre> genres = new List<Genre>();
+            foreach (Guid? genreId in trackDto.GenreIds)
+            {
+                var genre = _genreRepository.Get(genreId);
+                if (genre != null)
+                {
+                    genres.Add(genre);
+                }    
+            }
             var tempTrack = new Track() {
                 Name = trackDto.Name,
-                Genre = trackDto.Genre,
+                Genres = genres,
                 Album = _albumRepository.Get(trackDto.AlbumId),
             };
             
@@ -116,7 +133,7 @@ namespace MusicStoreApplication.Service.Implementation
                             : tracksQuery.OrderByDescending(x => (x.Artists.Count() > 0 ? String.Join(", ", x.Artists.Select(at => at.Artist.Name)) : ""));
                         break;
                     case "Genre":
-                        tracksQuery = sortOrder == SortOrder.Ascending ? tracksQuery.OrderBy(x => x.Genre) : tracksQuery.OrderByDescending(x => x.Genre);
+                        tracksQuery = sortOrder == SortOrder.Ascending ? tracksQuery.OrderBy(x => x.Genres) : tracksQuery.OrderByDescending(x => x.Genres);
                         break;
                     case "Album":
                         tracksQuery = sortOrder == SortOrder.Ascending ? tracksQuery.OrderBy(x => x.Album) : tracksQuery.OrderByDescending(x => x.Album);
@@ -169,10 +186,23 @@ namespace MusicStoreApplication.Service.Implementation
                     tempAlbum = _albumRepository.GetAlbumByName(line.AlbumName);
                 }
 
+                List<string> genreStrings = line.Genre.Split(";").ToList();
+                List<Genre> genres = _genreRepository.GetAll().Where(g => genreStrings.Contains(g.Name)).ToHashSet().ToList();
+                foreach (string genreString in genreStrings)
+                {
+                    if (!genres.Select(g => g.Name).Contains(genreString))
+                    {
+                        var tmpGenre = new Genre();
+                        tmpGenre.Name = genreString;
+                        tmpGenre = _genreRepository.Insert(tmpGenre);
+                        genres.Add(tmpGenre);
+                    }
+                }
+
                 Track tempTrack = new Track()
                 {
                     Name = line.TrackName,
-                    Genre = line.Genre,
+                    Genres = genres,
                     Album = tempAlbum,
                     DurationInMilliseconds = line.Duration_MS
                 };
@@ -261,12 +291,26 @@ namespace MusicStoreApplication.Service.Implementation
 
                         double duration_ms = double.Parse(parts[3]);
 
-                        string genre = parts[4];
+                        string genreName = parts[4];
+
+                        List<string> genreStrings = genreName.Split(";").ToList();
+                        List<Genre> genres = _genreRepository.GetAll().Where(g => genreStrings.Contains(g.Name)).ToHashSet().ToList();
+                        foreach (string genreString in genreStrings)
+                        {
+                            Genre? genre = genres.Where(g => g.Name == genreString).First();
+                            if (genre == null)
+                            {
+                                var tmpGenre = new Genre();
+                                tmpGenre.Name = genreString;
+                                tmpGenre = _genreRepository.Insert(tmpGenre);
+                                genres.Add(tmpGenre);
+                            }
+                        }
 
                         Track tempTrack = new Track()
                         {
                             Name = trackName,
-                            Genre = genre,
+                            Genres = genres,
                             Album = tempAlbum,
                             DurationInMilliseconds = duration_ms
                         };
