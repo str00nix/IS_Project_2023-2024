@@ -106,20 +106,7 @@
             <td>
 				@if (item.Artists != null && item.Artists.Count() > 0)
 				{
-					int index = 1;
-					int length = item.Artists.Count();
-					@foreach(var artist in item.Artists.Select(at => at.Artist))
-					{
-                            @if (index != length && artist.Name.Trim() != "")
-                            {
-                                @(artist.Name + ", ")
-                            }
-                            else
-                            {
-                                @artist.Name
-                            }
-                            index++;
-                    }
+                    @(String.Join(", ", item.Artists.Select(a => a.Artist.Name)))
                 }
                 else
                 {
@@ -137,15 +124,15 @@
 				}
             </td>
             <td>
-                    @if (item.DurationInMilliseconds != null)
-                    {
-                            TimeSpan t = TimeSpan.FromMilliseconds((double)item.DurationInMilliseconds);
-                        @String.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds)
-                    }
-                    else
-                    {
-                        <span>/</span>
-                    }
+                @if (item.DurationInMilliseconds != null)
+                {
+                    TimeSpan t = TimeSpan.FromMilliseconds((double)item.DurationInMilliseconds);
+                    @String.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds)
+                }
+                else
+                {
+                    <span>00:00</span>
+                }
                 </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

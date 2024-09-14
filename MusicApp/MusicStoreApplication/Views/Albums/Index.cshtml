@@ -1,72 +1,215 @@
 ﻿@model IEnumerable<MusicStoreApplication.Domain.Domain.Album>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>
+    var showFilter = false;
+
+    function toggleShowFilter() { 
+        showFilter = !showFilter;
+        let filterButton = document.getElementById("showFilterButton");
+        let filters = document.getElementById("filters");
+        if (showFilter) {
+            filterButton.innerHTML = "Hide Filters <i class='fa-solid fa-chevron-up'></i>";
+            filters.hidden = false;
+        }
+        else 
+        {
+            filterButton.innerHTML = "Show Filters <i class='fa-solid fa-chevron-down'></i>";
+            filters.hidden = true;
+        }
+    }
+
+    function SwitchViewGrid() { 
+        let gridView = document.getElementById("gridView");
+        gridView.hidden = false;
+        let listView = document.getElementById("listView");
+        listView.hidden = true;
+    }
+    function SwitchViewList() { 
+        let gridView = document.getElementById("gridView");
+        gridView.hidden = true;
+        let listView = document.getElementById("listView");
+        listView.hidden = false;
+    }
+</script>
+
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1 class="text-decoration-underline">Albums</h1>
 
-
-<div class="container mt-5">
-        <div class="row">
-            @foreach (var album in Model)
-            {
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                    <img src="~/images/record-clipart.png" class="card-img-top p-2" /> 
-						<div class="p-2 card-title d-flex justify-content-between align-items-end">
-                            <h5 class="card-title">@album.Name</h5>
-							<div class="dropdown">
-								<button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-									<svg width="12" height="14" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-										<path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
-									</svg>
-								</button>
-								<ul class="dropdown-menu">
-									<li><a class="dropdown-item" asp-action="Details" asp-route-id="@album.Id">Details</a></li>
-									<li><hr class="dropdown-divider border-top border-secondary"></li>
-									<li><a class="dropdown-item text-warning" asp-action="Edit" asp-route-id="@album.Id">Edit</a></li>
-									<li><a class="dropdown-item text-danger" asp-action="Delete" asp-route-id="@album.Id">Delete</a></li>
-								</ul>
-							</div>
-						</div>                
-                        <div class="card-subtitle p-2 d-flex">
-                            <h6 class="text-muted me-1">
-								@{int index = 1;}
-								@{int length = album.Tracks.SelectMany(t => t.Artists).ToHashSet().Count();}
-								@foreach (var artist in album.Tracks.SelectMany(t => t.Artists.Select(at => at.Artist)).ToHashSet())
-								{
-								 <span>@artist.Name</span>
-								@if (index != length)
-								{
-								 <span>,&nbsp</span>
-								}
-								index++;
-							}
-							</h6>
-							<div class="vr"></div>
-                            <h6 class="text-muted ms-1">
-								@foreach (var genre in album.Tracks.Select(t => t.Genre))
-								{
-								 <span>@genre</span>
-								}
-							</h6>
-						</div>
-                    </div>
-                </div>
-            }
-			<div class="col-md-4 mb-4 d-flex align-items-stretch">
-				<div class="d-flex align-items-center justify-content-center container">
-					<div class="p-4 d-flex justify-content-center align-items-end">
-						<a asp-action="Create">
-						<button type="button" class="btn btn-success ps-5 pe-5 pt-5 pb-5 rounded-circle btn-lg d-flex align-items-center">
-							<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-								<path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
-							</svg>
-						</button>
-						</a>
-					</div>
-				</div>
-			</div>
+<form id="searchForm" class="container">
+    <div class="row form-group">
+        <div class="col col-lg-9 col-md-8 col-sm-7 p-0">
+            <input class="form-control rounded-0" name="searchString" 
+                type="search" placeholder="Search..." aria-label="Search" />
+        </div>
+        <div class="col col-lg-3 col-md-4 col-sm-5 p-0">
+            <button onclick="toggleShowFilter()" class="btn btn-secondary btn-block w-100 rounded-0" type="button" id="showFilterButton">
+                Show Filters
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
         </div>
     </div>
+
+    <div id="filters" hidden>
+        <div class="row mt-2">
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="genreInput" class="col-2 col-form-label">Genre:</label>
+                    <div class="col">
+                    <input class="form-control rounded-0" name="genreInput" 
+                        type="search" placeholder="Genre..." aria-label="Search" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 ps-4">
+                <div class="form-group row">
+                    <label for="artistInput" class="col-2 col-form-label">Artist:</label>
+                    <div class="col">
+                    <input class="form-control rounded-0" name="artistInput" 
+                        type="search" placeholder="Artist..." aria-label="Search" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-0 mt-2">
+        <div class="col col-lg-9 col-md-8 col-sm-7 p-0">
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-5 p-0">
+            <button class="btn btn-dark btn-block w-100 rounded-0" type="submit">
+                Search <i class="fas fa-search"></i>
+            </button>
+        </div>
+    <div/>
+
+</form>
+
+<div class="row">
+    <div class="col btn-group btn-group-toggle m-2" data-toggle="buttons">
+      <button onclick="SwitchViewList()" class="btn btn-secondary active">
+          <i class="fa-solid fa-table"></i>
+      </button>
+      <button onclick="SwitchViewGrid()" class="btn btn-secondary">
+        <i class="fa-solid fa-list"></i>
+      </button>
+    </div>
+</div>
+
+<div id="gridView" class="container mt-5">
+    <div class="row">
+        @foreach (var album in Model)
+        {
+            <div class="col-lg-2 col-md-3 mb-4">
+                <div class="card h-100">
+                <img src="~/images/record-clipart.png" class="card-img-top p-2" /> 
+                    <div class="p-2 card-title d-flex justify-content-between align-items-end">
+                        <h5 class="card-title">@album.Name</h5>
+                        <div class="dropdown">
+                            <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <svg width="12" height="14" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                                    <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+                                </svg>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-action="Details" asp-route-id="@album.Id">Details</a></li>
+                                <li><hr class="dropdown-divider border-top border-secondary"></li>
+                                <li><a class="dropdown-item text-warning" asp-action="Edit" asp-route-id="@album.Id">Edit</a></li>
+                                <li><a class="dropdown-item text-danger" asp-action="Delete" asp-route-id="@album.Id">Delete</a></li>
+                            </ul>
+                        </div>
+                    </div>                
+                    <div class="card-subtitle p-2 d-flex-inline">
+                        <h6 class="text-muted pe-1">
+                            @(String.Join(", ", album.Tracks.SelectMany(t => t.Artists.Select(at => at.Artist.Name)).ToHashSet()) + " | ")
+                            <span>
+                                @foreach (var genre in album.Tracks.Select(t => t.Genre))
+                                {
+                                 <span>@genre</span>
+                                }
+                            </span>
+                        </h6>
+
+                        @{
+                            var totalTime = album
+                                .Tracks
+                                .Select(t => t != null ? (t.DurationInMilliseconds != null ? t.DurationInMilliseconds : 0.0) : 0.0)
+                                .Aggregate((x, y) => x + y);
+
+                            TimeSpan t = TimeSpan.FromMilliseconds((double)totalTime);
+                        }
+                        <div class="mask w-100 flex-grow-1 align-items-end justify-content-end ">
+                            <h6 class="text-muted p-1">
+                                @String.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds)
+                            </h6>
+                        </div>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="col-lg-2 col-md-3 col-sm-4 mb-4 d-flex align-items-stretch">
+            <div class="d-flex align-items-center justify-content-center container">
+                <div class="p-4 d-flex justify-content-center align-items-end">
+                    <a asp-action="Create">
+                    <button type="button" class="btn btn-success ps-5 pe-5 pt-5 pb-5 rounded-circle btn-lg d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
+                        </svg>
+                    </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table id="listView" class="table" hidden>
+ <thead>
+     <tr>
+         <th>Name</th>
+         <th>Artists</th>
+         <th>Duration</th>
+     </tr>
+ </thead>
+ <tbody>
+    @foreach (var album in Model)
+    {
+        <tr>
+            <td>@album.Name</td>
+            <td>@(String.Join(", ", album.Tracks.SelectMany(t => t.Artists.Select(at => at.Artist.Name)).ToHashSet()))</td>
+            @{
+                var totalTime = album
+                    .Tracks
+                    .Select(t => t != null ? (t.DurationInMilliseconds != null ? t.DurationInMilliseconds : 0.0) : 0.0)
+                    .Aggregate((x, y) => x + y);
+
+                TimeSpan t = TimeSpan.FromMilliseconds((double)totalTime);
+            }
+            <td>@String.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds)</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@album.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@album.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@album.Id">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.9/js/bootstrap-select.min.js"></script>
+<script>
+
+    $('#searchForm').onsubmit = function () { 
+        console.log($('#artistSelect').val());
+    };
+
+        $('.selectpicker').selectpicker({
+      });
+</script>
