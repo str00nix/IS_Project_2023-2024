@@ -11,11 +11,12 @@ namespace MusicStoreApplication.Service.Interface
     public interface IPlaylistService
     {
         public List<Playlist> GetPlaylists();
+        //public List<Playlist> GetPlaylistsFromUser(string userId);
         public Playlist? GetPlayListById(Guid id);
         public Playlist CreateNewPlaylist(Playlist playlist);
         public Playlist UpdatePlaylist(Playlist playlist);
         public Playlist DeletePlaylist(Guid id);
-        public Playlist AddTrackToPlaylist(string playlistID, AddTrackToPlaylistDTO playlistDTO);
-        public Playlist RemoveTrackFromPlaylist(string playlistID, AddTrackToPlaylistDTO playlistDTO);
+        public Playlist AddTrackToPlaylist(string userId, AddTrackToPlaylistDTO playlistDTO);
+        public Playlist RemoveTrackFromPlaylist(string userId, AddTrackToPlaylistDTO playlistDTO);
     }
 }

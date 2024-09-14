@@ -33,7 +33,8 @@ namespace MusicStoreApplication.Repository.Implementation
         public MusicApplicationUser Get(string id)
         {
             return entities
-                 .SingleOrDefaultAsync(z => z.Id == id).Result;
+                .Include(z => z.MyPlaylists).ThenInclude(z => z.TracksInPlaylist).ThenInclude(z => z.Track)
+                .SingleOrDefaultAsync(z => z.Id == id).Result;
         }
 
         public IEnumerable<MusicApplicationUser> GetAll()

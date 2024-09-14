@@ -9,6 +9,5 @@ namespace MusicStoreApplication.Repository.Interface
 {
     public interface IPlaylistRepository : IRepository<Playlist>
     {
-        List<Playlist> GetAllPlaylists();
     }
 }

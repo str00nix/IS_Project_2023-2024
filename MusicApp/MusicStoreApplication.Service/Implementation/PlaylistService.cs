@@ -15,12 +15,16 @@ namespace MusicStoreApplication.Service.Implementation
 {
     public class PlaylistService : IPlaylistService
     {
+        private readonly IUserRepository _userRepository;
         private readonly IPlaylistRepository _playlistRepository;
+        private readonly IRepository<TrackInPlaylist> _trackInPlaylistRepository;
         private readonly ITrackRepository _trackRepository;
 
-        public PlaylistService(IPlaylistRepository playlistRepository, ITrackRepository trackRepository)
+        public PlaylistService(IUserRepository userRepository, IPlaylistRepository playlistRepository, IRepository<TrackInPlaylist> trackInPlaylistRepository, ITrackRepository trackRepository)
         {
+            _userRepository = userRepository;
             _playlistRepository = playlistRepository;
+            _trackInPlaylistRepository = trackInPlaylistRepository;
             _trackRepository = trackRepository;
         }
 
@@ -42,36 +46,47 @@ namespace MusicStoreApplication.Service.Implementation
 
         public List<Playlist> GetPlaylists()
         {
-            return _playlistRepository.GetAllPlaylists();
+            return _playlistRepository.GetAll().ToList();
         }
+
+        //public List<Playlist> GetPlaylistsFromUser(string userId) { 
+            
+        //}
 
         public Playlist UpdatePlaylist(Playlist playlist)
         {
             return _playlistRepository.Update(playlist);
         }
 
-        public Playlist AddTrackToPlaylist(string playlistID, AddTrackToPlaylistDTO playlistDTO)
+        public Playlist AddTrackToPlaylist(string userId, AddTrackToPlaylistDTO playlistDTO)
         {
-            Guid? playlistGUID = new Guid(playlistID);
-            Playlist tempPlaylist = _playlistRepository.Get((Guid)playlistGUID);
 
-            if (tempPlaylist != null)
-            {
-                Track tempTrack = _trackRepository.Get(playlistDTO.TrackID);
-                if(tempTrack != null)
+            if (userId != null) {
+
+                var loggedInUser = _userRepository.Get(userId);
+
+                var userPlaylists = loggedInUser?.MyPlaylists;
+
+                Playlist? tempPlaylist = userPlaylists.Where(z => z.Id == playlistDTO.PlaylistID).FirstOrDefault();
+
+                if (tempPlaylist != null)
                 {
-                    //if (tempPlaylist.TracksInPlaylist.Where(tp => tp.Track.Equals(tempTrack)).ToList().Count() == 0)
-                    if (!tempPlaylist.TracksInPlaylist.Any(tp => tp.Track.Equals(tempTrack)))
+                    Track tempTrack = _trackRepository.Get(playlistDTO.TrackID);
+                    if (tempTrack != null)
                     {
-                        tempPlaylist.TracksInPlaylist.Add(new TrackInPlaylist
+                        if (!tempPlaylist.TracksInPlaylist.Any(tp => tp.Track.Equals(tempTrack)))
                         {
-                            TrackId = playlistDTO.TrackID,
-                            Track = tempTrack,
-                            PlaylistId = (Guid)playlistGUID,
-                            Playlist = tempPlaylist
-                        });
+                            TrackInPlaylist trackInPlaylist = _trackInPlaylistRepository.Insert(new TrackInPlaylist
+                            {
+                                TrackId = playlistDTO.TrackID,
+                                Track = tempTrack,
+                                PlaylistId = playlistDTO.PlaylistID,
+                                Playlist = tempPlaylist
+                            });
+                            tempPlaylist.TracksInPlaylist.Add(trackInPlaylist);
 
-                        return _playlistRepository.Update(tempPlaylist);
+                            return _playlistRepository.Update(tempPlaylist);
+                        }
                     }
                 }
             }
@@ -79,21 +94,28 @@ namespace MusicStoreApplication.Service.Implementation
             return null;
         }
 
-        public Playlist RemoveTrackFromPlaylist(string playlistID, AddTrackToPlaylistDTO playlistDTO)
+        public Playlist RemoveTrackFromPlaylist(string userId, AddTrackToPlaylistDTO playlistDTO)
         {
-            Guid? playlistGUID = new Guid(playlistID);
-            Playlist tempPlaylist = _playlistRepository.Get((Guid)playlistGUID);
+            if (userId != null) {
 
-            if (tempPlaylist != null)
-            {
-                Track tempTrack = _trackRepository.Get(playlistDTO.TrackID);
-                if(tempTrack != null)
+                var loggedInUser = _userRepository.Get(userId);
+
+                var userPlaylists = loggedInUser?.MyPlaylists;
+
+                Playlist? tempPlaylist = userPlaylists.Where(z => z.Id == playlistDTO.PlaylistID).FirstOrDefault();
+
+                if (tempPlaylist != null)
                 {
-                    var trackToRemove = tempPlaylist.TracksInPlaylist.FirstOrDefault(tp => tp.Track.Equals(tempTrack));
-                    if (trackToRemove != null) {
-                        tempPlaylist.TracksInPlaylist.Remove(trackToRemove);
-                    
-                        return _playlistRepository.Update(tempPlaylist);
+                    Track tempTrack = _trackRepository.Get(playlistDTO.TrackID);
+                    if (tempTrack != null)
+                    {
+                        var trackToRemove = tempPlaylist.TracksInPlaylist.FirstOrDefault(tp => tp.Track.Equals(tempTrack));
+                        if (trackToRemove != null)
+                        {
+                            tempPlaylist.TracksInPlaylist.Remove(trackToRemove);
+
+                            return _playlistRepository.Update(tempPlaylist);
+                        }
                     }
                 }
             }

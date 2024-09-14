@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,21 +18,64 @@ namespace MusicStoreApplication.Web.Controllers
     public class PlaylistsController : Controller
     {
         private readonly IPlaylistService _playlistService;
-        private readonly ApplicationDbContext _context;
 
-        public PlaylistsController(IPlaylistService playlistService, ApplicationDbContext context)
+        public PlaylistsController(IPlaylistService playlistService)
         {
             _playlistService = playlistService;
-            _context = context;
         }
 
 
         // GET: Playlists
         public async Task<IActionResult> Index()
         {
-            //return View(await _context.Playlists.ToListAsync());
+            //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? null;
             var result = _playlistService.GetPlaylists();
+            //var result = _playlistService.GetPlaylistsFromUser(userId ?? "");
             return View(result);
+        }
+
+        [Authorize]
+        public IActionResult AddProductToCart(Guid Id)
+        {
+            var result = _playlistService.GetPlayListById(Id);
+            if (result != null)
+            {
+                return View(result);
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult AddTrackToPlaylist(AddTrackToPlaylistDTO model)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? null;
+
+            var result = _playlistService.AddTrackToPlaylist(userId, model);
+
+            if (result != null)
+            {
+                return RedirectToAction("Index", "Playlists");
+            }
+            else {
+                return View(model);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult DeleteTrackFromPlaylist(AddTrackToPlaylistDTO model)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? null;
+
+            var result = _playlistService.RemoveTrackFromPlaylist(userId, model);
+
+            if (result != null)
+            {
+                return RedirectToAction("Index", "Playlists");
+            }
+            else
+            {
+                return View(model);
+            }
         }
 
         // GET: Playlists/Details/5
@@ -41,8 +86,6 @@ namespace MusicStoreApplication.Web.Controllers
                 return NotFound();
             }
 
-            //var playlist = await _context.Playlists
-            //    .FirstOrDefaultAsync(m => m.Id == id);
             var playlist = _playlistService.GetPlayListById((Guid)id);
             if (playlist == null)
             {
@@ -67,9 +110,7 @@ namespace MusicStoreApplication.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                playlist.Id = Guid.NewGuid();
-                _context.Add(playlist);
-                await _context.SaveChangesAsync();
+                _playlistService.CreateNewPlaylist(playlist);
                 return RedirectToAction(nameof(Index));
             }
             return View(playlist);
@@ -83,7 +124,7 @@ namespace MusicStoreApplication.Web.Controllers
                 return NotFound();
             }
 
-            var playlist = await _context.Playlists.FindAsync(id);
+            var playlist = _playlistService.GetPlayListById((Guid)id);
             if (playlist == null)
             {
                 return NotFound();
@@ -107,8 +148,7 @@ namespace MusicStoreApplication.Web.Controllers
             {
                 try
                 {
-                    _context.Update(playlist);
-                    await _context.SaveChangesAsync();
+                    _playlistService.UpdatePlaylist(playlist);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -134,8 +174,7 @@ namespace MusicStoreApplication.Web.Controllers
                 return NotFound();
             }
 
-            var playlist = await _context.Playlists
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var playlist = _playlistService.GetPlayListById((Guid) id);
             if (playlist == null)
             {
                 return NotFound();
@@ -149,38 +188,18 @@ namespace MusicStoreApplication.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var playlist = await _context.Playlists.FindAsync(id);
+            var playlist = _playlistService.GetPlayListById(id);
             if (playlist != null)
             {
-                _context.Playlists.Remove(playlist);
+                _playlistService.DeletePlaylist(id);
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool PlaylistExists(Guid id)
         {
-            return _context.Playlists.Any(e => e.Id == id);
-        }
-
-        // GET: Playlists/Delete/5
-        public async Task<IActionResult> AddTrackToPlaylistTest()
-        {
-            Guid trackId = new Guid("fe9e6cd1-cd62-4c0e-9e9c-5ceb8aa1b0bc");
-            var addTrackToPlaylistDto = new AddTrackToPlaylistDTO();
-            addTrackToPlaylistDto.TrackID = trackId;
-            _playlistService.AddTrackToPlaylist("6ad78f1a-cc96-44ba-a590-7617216f1b73", addTrackToPlaylistDto);
-            return RedirectToAction(nameof(Index));
-        }
-        // GET: Playlists/Delete/5
-        public async Task<IActionResult> RemoveTrackFromPlaylistTest()
-        {
-            Guid trackId = new Guid("fe9e6cd1-cd62-4c0e-9e9c-5ceb8aa1b0bc");
-            var addTrackToPlaylistDto = new AddTrackToPlaylistDTO();
-            addTrackToPlaylistDto.TrackID = trackId;
-            _playlistService.RemoveTrackFromPlaylist("6ad78f1a-cc96-44ba-a590-7617216f1b73", addTrackToPlaylistDto);
-            return RedirectToAction(nameof(Index));
+            return _playlistService.GetPlayListById(id) != null;
         }
     }
 }

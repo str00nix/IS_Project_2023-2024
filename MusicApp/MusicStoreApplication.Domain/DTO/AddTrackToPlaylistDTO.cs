@@ -10,6 +10,7 @@ namespace MusicStoreApplication.Domain.DTO
 {
     public class AddTrackToPlaylistDTO
     {
+        public Guid PlaylistID { get; set; }
         public Guid TrackID { get; set; }
     }
 }

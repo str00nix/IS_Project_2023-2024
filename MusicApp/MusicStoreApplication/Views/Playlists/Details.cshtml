@@ -10,6 +10,39 @@
     <h4>Playlist</h4>
     <hr />
     <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            Playlist
+        </dt>
+        <dt class="col-sm-2">
+            Tracks
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.TracksInPlaylist != null && Model.TracksInPlaylist.Count() > 0)
+            {
+                int index = 1;
+                int length = Model.TracksInPlaylist.Count();
+                @foreach (var track in Model.TracksInPlaylist.Select(at => at.Track))
+                {
+                    @track.Name
+                    @if (index != length)
+                    {
+                        <span>,&nbsp</span>
+                    }
+                    index++;
+                }
+
+            }
+            else
+            {
+                <span>None</span>
+            }
+        </dd>
     </dl>
 </div>
 <div>

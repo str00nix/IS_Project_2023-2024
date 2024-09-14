@@ -20,14 +20,6 @@ namespace MusicStoreApplication.Repository.Implementation
             entities = context.Set<Playlist>();
         }
 
-        public List<Playlist> GetAllPlaylists()
-        {
-            return entities
-                .Include(z => z.TracksInPlaylist)
-                .Include(z => z.User)
-                .ToList();
-        }
-
         public Playlist Get(Guid? id)
         {
             var result = entities
@@ -40,8 +32,10 @@ namespace MusicStoreApplication.Repository.Implementation
         
         public IEnumerable<Playlist> GetAll()
         {
-            return entities.AsEnumerable();
+            return entities.Include(z => z.TracksInPlaylist).ThenInclude(z => z.Track)
+                           .Include(z => z.TracksInPlaylist).ThenInclude(z => z.Playlist);
         }
+
         public Playlist Insert(Playlist entity)
         {
             if (entity == null)

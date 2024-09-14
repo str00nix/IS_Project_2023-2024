@@ -12,12 +12,28 @@
 <table class="table">
     <thead>
         <tr>
+            <th>Playlist Name</th>
+            <th>Tracks</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model)
+        {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @if (item.TracksInPlaylist != null && item.TracksInPlaylist.Count() > 0)
+                {
+                    @(String.Join(", ", item.TracksInPlaylist.Select(a => a.Track.Name)))
+                }
+                else
+                {
+                    <span>None</span>
+                }
+            </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
