@@ -5,6 +5,7 @@ using MusicStoreApplication.Domain.DTO;
 using MusicStoreApplication.Repository.Interface;
 using MusicStoreApplication.Service.Interface;
 using System;
+using System.Collections.Generic;
 
 namespace MusicStoreApplication.Web.Controllers.API
 {
@@ -46,6 +47,11 @@ namespace MusicStoreApplication.Web.Controllers.API
         public Album GetAlbumDetails(BaseEntity baseEntity)
         {
             return _albumService.GetAlbumById(baseEntity.Id);
+        }
+        [HttpGet("[action]")]
+        public List<PlaylistDTO> GetAllPlaylistDTOs()
+        {
+            return _playlistService.GetPlaylistDTOs();
         }
     }
 }

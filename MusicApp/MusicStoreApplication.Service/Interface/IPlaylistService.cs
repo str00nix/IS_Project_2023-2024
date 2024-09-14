@@ -11,7 +11,7 @@ namespace MusicStoreApplication.Service.Interface
     public interface IPlaylistService
     {
         public List<Playlist> GetPlaylists();
-        //public List<Playlist> GetPlaylistsFromUser(string userId);
+        public List<PlaylistDTO> GetPlaylistDTOs();
         public Playlist? GetPlayListById(Guid id);
         public Playlist CreateNewPlaylist(Playlist playlist);
         public Playlist UpdatePlaylist(Playlist playlist);

@@ -6,6 +6,7 @@ using MusicStoreApplication.Repository.Interface;
 using MusicStoreApplication.Service.Interface;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -49,9 +50,31 @@ namespace MusicStoreApplication.Service.Implementation
             return _playlistRepository.GetAll().ToList();
         }
 
-        //public List<Playlist> GetPlaylistsFromUser(string userId) { 
-            
-        //}
+        public List<PlaylistDTO> GetPlaylistDTOs()
+        {
+            List<PlaylistDTO> playlistDTOs = new List<PlaylistDTO>();
+            List<Playlist> tempPlaylists = _playlistRepository.GetAll().ToList();
+            foreach (Playlist p in tempPlaylists) {
+
+                List<Dictionary<string, string>> tempTracks = new List<Dictionary<string, string>>();
+
+                foreach (TrackInPlaylist trackInPlaylist in p.TracksInPlaylist) {
+                    
+                    tempTracks.Add(
+                        new Dictionary<string, string>() { { trackInPlaylist.TrackId.ToString(), trackInPlaylist.Track.Name } }
+                        );
+                }
+
+                playlistDTOs.Add(new PlaylistDTO() {
+                    PlaylistName = p.Name,
+                    User = new Dictionary<string, string>() { {
+                            p.User.Id, p.User.UserName }
+                    },
+                    Tracks = tempTracks
+                });
+            }
+            return playlistDTOs;
+        }
 
         public Playlist UpdatePlaylist(Playlist playlist)
         {
