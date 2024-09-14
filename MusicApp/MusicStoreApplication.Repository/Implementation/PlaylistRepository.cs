@@ -32,8 +32,7 @@ namespace MusicStoreApplication.Repository.Implementation
         
         public IEnumerable<Playlist> GetAll()
         {
-            return entities.Include(z => z.TracksInPlaylist).ThenInclude(z => z.Track)
-                           .Include(z => z.TracksInPlaylist).ThenInclude(z => z.Playlist);
+            return entities.Include(z => z.TracksInPlaylist).ThenInclude(z => z.Track);
         }
 
         public Playlist Insert(Playlist entity)

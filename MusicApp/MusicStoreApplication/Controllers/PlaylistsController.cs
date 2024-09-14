@@ -35,7 +35,7 @@ namespace MusicStoreApplication.Web.Controllers
         }
 
         [Authorize]
-        public IActionResult AddProductToCart(Guid Id)
+        public IActionResult AddTrackToPlaylist(Guid Id)
         {
             var result = _playlistService.GetPlayListById(Id);
             if (result != null)
@@ -98,7 +98,7 @@ namespace MusicStoreApplication.Web.Controllers
         // GET: Playlists/Create
         public IActionResult Create()
         {
-            return View();
+            return View(userId);
         }
 
         // POST: Playlists/Create
