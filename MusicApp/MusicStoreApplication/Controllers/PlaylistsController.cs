@@ -18,24 +18,27 @@ namespace MusicStoreApplication.Web.Controllers
     public class PlaylistsController : Controller
     {
         private readonly IPlaylistService _playlistService;
+        private readonly IUserRepository _userRepository;
 
-        public PlaylistsController(IPlaylistService playlistService)
+        public PlaylistsController(IPlaylistService playlistService, IUserRepository userRepository)
         {
             _playlistService = playlistService;
+            _userRepository = userRepository;
+
         }
 
 
         // GET: Playlists
         public async Task<IActionResult> Index()
         {
-            //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? null;
-            var result = _playlistService.GetPlaylists();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? null;
+            var result = _playlistService.GetPlaylists().Where(z => z.User != null ? z.User.Id.Equals(userId) : false);
             //var result = _playlistService.GetPlaylistsFromUser(userId ?? "");
             return View(result);
         }
 
         [Authorize]
-        public IActionResult AddProductToCart(Guid Id)
+        public IActionResult AddTrackToPlaylist(Guid Id)
         {
             var result = _playlistService.GetPlayListById(Id);
             if (result != null)
@@ -106,10 +109,12 @@ namespace MusicStoreApplication.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id")] Playlist playlist)
+        public async Task<IActionResult> Create([Bind("Name")] Playlist playlist)
         {
             if (ModelState.IsValid)
             {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? null;
+                playlist.User = _userRepository.Get(userId);
                 _playlistService.CreateNewPlaylist(playlist);
                 return RedirectToAction(nameof(Index));
             }

@@ -23,7 +23,6 @@ namespace MusicStoreApplication.Repository.Implementation
         public Playlist Get(Guid? id)
         {
             var result = entities
-                .Include(p => p.User)
                 .Include(p => p.TracksInPlaylist).ThenInclude(tp => tp.Track)
                 .SingleOrDefaultAsync(z => z.Id == id).Result;
 
@@ -32,8 +31,9 @@ namespace MusicStoreApplication.Repository.Implementation
         
         public IEnumerable<Playlist> GetAll()
         {
-            return entities.Include(z => z.TracksInPlaylist).ThenInclude(z => z.Track)
-                           .Include(z => z.TracksInPlaylist).ThenInclude(z => z.Playlist);
+            return entities
+                .Include(z => z.User)
+                .Include(z => z.TracksInPlaylist).ThenInclude(z => z.Track);
         }
 
         public Playlist Insert(Playlist entity)
