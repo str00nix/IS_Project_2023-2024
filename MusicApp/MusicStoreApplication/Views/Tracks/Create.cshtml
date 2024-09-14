@@ -4,26 +4,42 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1 class="font-weight-bold"><u>Create Track</u></h1>
 
-<h4>Track</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="TrackDto.Name" class="control-label"></label>
-                <input asp-for="TrackDto.Name" class="form-control" />
+            <div class="form-group row ps-2">
+                <label asp-for="TrackDto.Name" class="col-form-label col-3">Name:</label>
+                <div class="form-group col">
+                    <input asp-for="TrackDto.Name" class="form-control" />
+                </div>
                 <span asp-validation-for="TrackDto.Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="TrackDto.GenreIds" class="control-label"></label>
-                <input asp-for="TrackDto.GenreIds" class="form-control" />
-                <span asp-validation-for="TrackDto.GenreIds" class="text-danger"></span>
+            <div class="form-group row ps-2">
+                <label asp-for="TrackDto.DurationInMilliseconds" class="col-form-label col-3">Duration:</label>
+                <div class="form-group col">
+                    <input asp-for="TrackDto.DurationInMilliseconds" class="form-control" type="time"/>
+                </div>
+                <span asp-validation-for="TrackDto.DurationInMilliseconds" class="text-danger"></span>
             </div>
             <div class="form-group row ps-2">
-                <label asp-for="TrackDto.AlbumId" class="col-form-label col-2">Album:</label>
+                <label asp-for="TrackDto.GenreIds" class="col-form-label col-3">Genres:</label>
+                <div class="form-group col">
+                    <select asp-for="TrackDto.GenreIds" id="genreSelect" class="selectpicker" multiple data-live-search="true">
+                        @foreach(var artist in Model.Genres)
+                        {
+                        <option value="@artist.Id">
+                            @artist.Name
+                        </option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row ps-2">
+                <label asp-for="TrackDto.AlbumId" class="col-form-label col-3">Album:</label>
                 <div class="form-group col">
                     <select asp-for="TrackDto.AlbumId" id="albumSelect" class="selectpicker" data-live-search="true">
                         @foreach(var album in Model.Albums)
@@ -36,7 +52,7 @@
                 </div>
             </div>
             <div class="form-group row ps-2">
-                <label asp-for="TrackDto.ArtistIds" class="col-form-label col-2">Artists:</label>
+                <label asp-for="TrackDto.ArtistIds" class="col-form-label col-3">Artists:</label>
                 <div class="form-group col">
                     <select asp-for="TrackDto.ArtistIds" id="artistSelect" class="selectpicker" multiple data-live-search="true">
                         @foreach(var artist in Model.Artists)
@@ -48,8 +64,8 @@
                     </select>
                 </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="form-group row">
+                <input type="submit" value="Create" class="btn btn-primary w-100 rounded-0" />
             </div>
         </form>
     </div>

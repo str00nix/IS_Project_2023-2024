@@ -12,7 +12,7 @@ namespace MusicStoreApplication.Service.Interface
     public interface ITrackService
     {
         public List<Track> GetTracks(string? searchString = null, string[]? artistSelect = null);
-        public PagedSortedList<Track> GetTracksPaginated(string? searchString = null, string[]? artistSelect = null, int page = 1, int pageSize = 15, MusicStoreApplication.Domain.Domain.SortOrder sortOrder = MusicStoreApplication.Domain.Domain.SortOrder.Ascending, string? sortBy = null);
+        public PagedSortedList<Track> GetTracksPaginated(string? searchString = null, string[]? artistSelect = null, string[]? genreSelect = null, int page = 1, int pageSize = 15, MusicStoreApplication.Domain.Domain.SortOrder sortOrder = MusicStoreApplication.Domain.Domain.SortOrder.Ascending, string? sortBy = null);
         public Track? GetTrackById(Guid id);
         public Track CreateNewTrack(Track track);
         public Track UpdateTrack(Track track);

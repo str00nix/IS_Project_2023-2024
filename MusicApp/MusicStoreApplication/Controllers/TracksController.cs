@@ -21,13 +21,21 @@ namespace MusicStoreApplication.Web.Controllers
         private readonly ITrackService _trackService;
         private readonly IAlbumService _albumService;
         private readonly IArtistService _artistService;
+        private readonly IGenreService _genreService;
         private readonly ILogger<TracksController> _logger;
 
-        public TracksController(ITrackService trackService, IAlbumService albumService, IArtistService artistService, ILogger<TracksController> logger)
+        public TracksController(
+            ITrackService trackService, 
+            IAlbumService albumService, 
+            IArtistService artistService, 
+            IGenreService genreService, 
+            ILogger<TracksController> logger
+        )
         {
             _trackService = trackService;
             _albumService = albumService;
             _artistService = artistService;
+            _genreService = genreService;
             _logger = logger;
         }
 
@@ -35,6 +43,7 @@ namespace MusicStoreApplication.Web.Controllers
         public async Task<IActionResult> Index(
             [FromQuery] string? searchString, 
             [FromQuery] string[]? artistSelect, 
+            [FromQuery] string[]? genreSelect, 
             [FromQuery] int page = 1, 
             [FromQuery] int pageSize = 15, 
             [FromQuery] SortOrder sortOrder = SortOrder.Ascending, 
@@ -46,10 +55,11 @@ namespace MusicStoreApplication.Web.Controllers
                 pageSize = 50;
             }
 
-            var tracks = _trackService.GetTracksPaginated(searchString, artistSelect, page, pageSize, sortOrder, sortBy);
+            var tracks = _trackService.GetTracksPaginated(searchString, artistSelect, genreSelect, page, pageSize, sortOrder, sortBy);
             var artists = _artistService.GetArtists();
+            var genres = _genreService.GetGenres();
 
-            var model = new TrackIndexViewModel(tracks, artists);
+            var model = new TrackIndexViewModel(tracks, artists, genres);
             return View(model);
         }
 
@@ -79,6 +89,7 @@ namespace MusicStoreApplication.Web.Controllers
             model.Track = null;
             model.Artists = _artistService.GetArtists();
             model.Albums = _albumService.GetAlbums();
+            model.Genres = _genreService.GetGenres();
             return View(model);
         }
 
@@ -88,7 +99,7 @@ namespace MusicStoreApplication.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Genre,ArtistIds,AlbumId")] TrackDto trackDto)
+        public async Task<IActionResult> Create([Bind("Name,GenreIds,ArtistIds,AlbumId")] TrackDto trackDto)
         {
             var track = new Track();
             if (ModelState.IsValid)

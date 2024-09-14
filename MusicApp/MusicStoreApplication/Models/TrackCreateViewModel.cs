@@ -9,18 +9,21 @@ namespace MusicStoreApplication.Web.Models
         public TrackDto TrackDto;
         public List<Artist> Artists;
         public List<Album> Albums;
+        public List<Genre> Genres;
 
         public TrackCreateViewModel(
             Track track, 
             TrackDto trackDto, 
             List<Artist> artists,
-            List<Album> albums
+            List<Album> albums,
+            List<Genre> genres
         )
         {
             Track = track;
             TrackDto = trackDto;
             Artists = artists;
             Albums = albums;
+            Genres = genres;
         }
 
         public TrackCreateViewModel()
@@ -28,6 +31,7 @@ namespace MusicStoreApplication.Web.Models
             Track = null;
             Artists = new List<Artist>();
             Albums = new List<Album>();
+            Genres = new List<Genre>();
         }
     }
 }

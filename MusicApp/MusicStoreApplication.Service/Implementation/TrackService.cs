@@ -46,6 +46,7 @@ namespace MusicStoreApplication.Service.Implementation
         {
             var tempTrack = new Track() {
                 Name = trackDto.Name,
+                DurationInMilliseconds = trackDto.DurationInMilliseconds,
                 Genres = new List<GenreOfTrack>(),
                 Artists = new List<ArtistOfTrack>(),
                 Album = _albumRepository.Get(trackDto.AlbumId),
@@ -103,9 +104,8 @@ namespace MusicStoreApplication.Service.Implementation
             return tracks.ToList();
         }
 
-        public PagedSortedList<Track> GetTracksPaginated(string? searchString = null, string[]? artistSelect = null, int page = 1, int pageSize = 15, SortOrder sortOrder = SortOrder.Ascending, string? sortBy = null)
+        public PagedSortedList<Track> GetTracksPaginated(string? searchString = null, string[]? artistSelect = null, string[]? genreSelect = null, int page = 1, int pageSize = 15, SortOrder sortOrder = SortOrder.Ascending, string? sortBy = null)
         {
-
             var tracksQuery = _trackRepository.GetAll().AsQueryable();
 
 
@@ -113,12 +113,15 @@ namespace MusicStoreApplication.Service.Implementation
             {
                 tracksQuery = tracksQuery.Where(t => t.Name.ToLower().Contains(searchString.ToLower()));
             }
-
             if (artistSelect != null && artistSelect.Length != 0)
             {
                 tracksQuery = tracksQuery.Where(t => t.Artists.Where(at => artistSelect.Contains(at.Artist.Name)).Any());
             }
-
+            if (genreSelect != null && genreSelect.Length != 0)
+            {
+                tracksQuery = tracksQuery.Where(t => t.Genres.Where(gt => genreSelect.Contains(gt.GenreId.ToString())).Any());
+                //tracksQuery = tracksQuery.Where(t => t.Genres.Where(gt => genreSelect.Contains(gt.Genre.Name)).Any());
+            }
 
             var totalCount = tracksQuery.Count();
             var totalPages = (int)Math.Ceiling(totalCount * 1.0 / pageSize);

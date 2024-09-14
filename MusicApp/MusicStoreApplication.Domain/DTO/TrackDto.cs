@@ -10,6 +10,7 @@ namespace MusicStoreApplication.Domain.DTO
     public class TrackDto
     {
         public string Name { get; set; }
+        public double DurationInMilliseconds { get; set; }
         public List<Guid> GenreIds { get; set; }
         public List<Guid> ArtistIds { get; set; }
         public Guid AlbumId { get; set; }
