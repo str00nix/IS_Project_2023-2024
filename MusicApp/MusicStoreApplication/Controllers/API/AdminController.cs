@@ -13,10 +13,14 @@ namespace MusicStoreApplication.Web.Controllers.API
     public class AdminController : ControllerBase
     {
         private readonly ITrackService _trackService;
+        private readonly IAlbumService _albumService;
+        private readonly IPlaylistService _playlistService;
 
-        public AdminController(ITrackService trackService)
+        public AdminController(ITrackService trackService, IAlbumService albumService, IPlaylistService playlistService)
         {
             _trackService = trackService;
+            _albumService = albumService;
+            _playlistService = playlistService;
         }
 
         [HttpGet("[action]")]
@@ -32,6 +36,16 @@ namespace MusicStoreApplication.Web.Controllers.API
             _trackService.ExtractTracksFromCSVDTOs(model);
 
             return status;
+        }
+        [HttpGet("[action]")]
+        public List<Album> GetAllAlbums()
+        {
+            return _albumService.GetAlbums();
+        }
+        [HttpPost("[action]")]
+        public Album GetAlbumDetails(BaseEntity baseEntity)
+        {
+            return _albumService.GetAlbumById(baseEntity.Id);
         }
     }
 }
