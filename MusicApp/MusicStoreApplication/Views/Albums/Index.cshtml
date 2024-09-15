@@ -137,14 +137,7 @@
                     <div class="card-subtitle p-2 d-flex-inline">
                         <h6 class="text-muted pe-1">
                             @(String.Join(", ", album.Tracks.SelectMany(t => t.Artists.Select(at => at.Artist.Name)).ToHashSet()) + " | ")
-                            <span>
-                                @foreach (var genres in album.Tracks.Select(t => t.Genres.Select(gt => gt.Genre.Name)))
-                                {
-                                 <span>
-                                     @(String.Join(", ", genres))
-                                 </span>
-                                }
-                            </span>
+                            @(String.Join(", ", album.Tracks.SelectMany(t => t.Genres.Select(gt => gt.Genre.Name)).ToHashSet()))
                         </h6>
 
                         @{
@@ -243,16 +236,3 @@
     }
   </ul>
 </nav>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.9/js/bootstrap-select.min.js"></script>
-<script>
-
-    $('#searchForm').onsubmit = function () { 
-        console.log($('#artistSelect').val());
-    };
-
-        $('.selectpicker').selectpicker({
-      });
-</script>

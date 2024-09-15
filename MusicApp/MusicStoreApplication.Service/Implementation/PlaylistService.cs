@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,7 +41,7 @@ namespace MusicStoreApplication.Service.Implementation
             return _playlistRepository.Delete(playlist);
         }
 
-        public Playlist? GetPlayListById(Guid id)
+        public Playlist? GetPlaylistById(Guid id)
         {
             return _playlistRepository.Get(id);
         }
@@ -81,43 +82,28 @@ namespace MusicStoreApplication.Service.Implementation
             return _playlistRepository.Update(playlist);
         }
 
-        public Playlist AddTrackToPlaylist(string userId, AddTrackToPlaylistDTO playlistDTO)
+        public Playlist AddTrackToPlaylist(string userId, AddTrackToPlaylistDto playlistDto)
         {
+            var playlist = _playlistRepository.Get(playlistDto.PlaylistID);
+            var track = _trackRepository.Get(playlistDto.TrackID);
 
-            if (userId != null) {
-
-                var loggedInUser = _userRepository.Get(userId);
-
-                var userPlaylists = loggedInUser?.MyPlaylists;
-
-                Playlist? tempPlaylist = userPlaylists.Where(z => z.Id == playlistDTO.PlaylistID).FirstOrDefault();
-
-                if (tempPlaylist != null)
-                {
-                    Track tempTrack = _trackRepository.Get(playlistDTO.TrackID);
-                    if (tempTrack != null)
-                    {
-                        if (!tempPlaylist.TracksInPlaylist.Any(tp => tp.Track.Equals(tempTrack)))
-                        {
-                            TrackInPlaylist trackInPlaylist = _trackInPlaylistRepository.Insert(new TrackInPlaylist
-                            {
-                                TrackId = playlistDTO.TrackID,
-                                Track = tempTrack,
-                                PlaylistId = playlistDTO.PlaylistID,
-                                Playlist = tempPlaylist
-                            });
-                            tempPlaylist.TracksInPlaylist.Add(trackInPlaylist);
-
-                            return _playlistRepository.Update(tempPlaylist);
-                        }
-                    }
-                }
+            if (playlist == null || track == null)
+            {
+                return null; 
             }
+            var newTrackInPlaylist = new TrackInPlaylist();
+            newTrackInPlaylist.Track = track;
+            newTrackInPlaylist.TrackId = track.Id;
+            newTrackInPlaylist.Playlist = playlist;
+            newTrackInPlaylist.PlaylistId = playlist.Id;
 
-            return null;
+            playlist.TracksInPlaylist.Add(newTrackInPlaylist);
+            playlist = _playlistRepository.Update(playlist);
+
+            return playlist;
         }
 
-        public Playlist RemoveTrackFromPlaylist(string userId, AddTrackToPlaylistDTO playlistDTO)
+        public Playlist RemoveTrackFromPlaylist(string userId, AddTrackToPlaylistDto playlistDTO)
         {
             if (userId != null) {
 

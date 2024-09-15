@@ -22,3 +22,42 @@
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
+<h4 class="font-weight-bold">Tracks:</h4>
+<hr>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Genre
+            </th>
+            <th>
+                Artists
+			</th>
+        </tr>
+    </thead>
+        @if (Model.Tracks != null && Model.Tracks.Count() > 0)
+        {
+			<tbody>
+			@foreach (var item in Model.Tracks.Select(at => at.Track)) {
+				<tr>
+					<td>
+                        @item.Name
+					</td>
+					<td>
+                        @(String.Join(", ", item.Genres.Select(gt => gt.Genre.Name)))
+					</td>
+					<td>
+						@if (item.Artists != null && item.Artists.Count() > 0)
+						{
+                            @(String.Join(", ", item.Artists.Select(at => at.Artist.Name)))
+                        }
+					</td>
+				</tr>
+            }
+			</tbody>
+        }
+</table>

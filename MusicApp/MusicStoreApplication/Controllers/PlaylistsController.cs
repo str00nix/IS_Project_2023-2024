@@ -12,19 +12,25 @@ using MusicStoreApplication.Domain.DTO;
 using MusicStoreApplication.Repository;
 using MusicStoreApplication.Repository.Interface;
 using MusicStoreApplication.Service.Interface;
+using MusicStoreApplication.Web.Models;
 
 namespace MusicStoreApplication.Web.Controllers
 {
     public class PlaylistsController : Controller
     {
         private readonly IPlaylistService _playlistService;
+        private readonly ITrackService _trackService;
         private readonly IUserRepository _userRepository;
 
-        public PlaylistsController(IPlaylistService playlistService, IUserRepository userRepository)
+        public PlaylistsController(
+            IPlaylistService playlistService, 
+            ITrackService trackService,
+            IUserRepository userRepository
+        )
         {
             _playlistService = playlistService;
+            _trackService = trackService;
             _userRepository = userRepository;
-
         }
 
 
@@ -37,35 +43,48 @@ namespace MusicStoreApplication.Web.Controllers
             return View(result);
         }
 
-        [Authorize]
-        public IActionResult AddTrackToPlaylist(Guid Id)
+        [HttpGet]
+        public IActionResult AddTrackToPlaylist(Guid? id)
         {
-            var result = _playlistService.GetPlayListById(Id);
-            if (result != null)
+            Guid? trackId = id;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? null;
+            if (trackId == null || userId == null)
             {
-                return View(result);
+                return RedirectToAction("Index", "Tracks");
             }
-            return View();
+
+            var playlists = _playlistService.GetPlaylists().Where(p => p.User.Id == userId).ToList();
+            var track = _trackService.GetTrackById((Guid) trackId);
+            var addTrackDto = new AddTrackToPlaylistDto();
+            addTrackDto.TrackID = track.Id;
+
+            var model = new AddTrackToPlaylistViewModel();
+            model.Playlists = playlists;
+            model.Track = track;
+            model.AddTrackToPlaylistDto = addTrackDto;
+
+            return View(model);
         }
 
         [HttpPost]
-        public IActionResult AddTrackToPlaylist(AddTrackToPlaylistDTO model)
+        public IActionResult AddTrackToPlaylist([Bind("AddTrackToPlaylistDto.PlaylistID,AddTrackToPlaylistDto.TrackID")] AddTrackToPlaylistDto addTrackToPlaylistDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? null;
+            var playlist = _playlistService.GetPlaylistById(addTrackToPlaylistDto.PlaylistID);
 
-            var result = _playlistService.AddTrackToPlaylist(userId, model);
-
-            if (result != null)
+            if (userId == null || playlist==null || playlist.User.Id != userId)
             {
-                return RedirectToAction("Index", "Playlists");
+                return RedirectToAction("Index", "Tracks");
             }
-            else {
-                return View(model);
-            }
+
+            var result = _playlistService.AddTrackToPlaylist(userId, addTrackToPlaylistDto);
+
+            return RedirectToAction("Details", "Playlist", new { id = addTrackToPlaylistDto.PlaylistID });
+
         }
 
         [HttpPost]
-        public IActionResult DeleteTrackFromPlaylist(AddTrackToPlaylistDTO model)
+        public IActionResult DeleteTrackFromPlaylist(AddTrackToPlaylistDto model)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? null;
 
@@ -89,7 +108,7 @@ namespace MusicStoreApplication.Web.Controllers
                 return NotFound();
             }
 
-            var playlist = _playlistService.GetPlayListById((Guid)id);
+            var playlist = _playlistService.GetPlaylistById((Guid)id);
             if (playlist == null)
             {
                 return NotFound();
@@ -129,7 +148,7 @@ namespace MusicStoreApplication.Web.Controllers
                 return NotFound();
             }
 
-            var playlist = _playlistService.GetPlayListById((Guid)id);
+            var playlist = _playlistService.GetPlaylistById((Guid)id);
             if (playlist == null)
             {
                 return NotFound();
@@ -179,7 +198,7 @@ namespace MusicStoreApplication.Web.Controllers
                 return NotFound();
             }
 
-            var playlist = _playlistService.GetPlayListById((Guid) id);
+            var playlist = _playlistService.GetPlaylistById((Guid) id);
             if (playlist == null)
             {
                 return NotFound();
@@ -193,7 +212,7 @@ namespace MusicStoreApplication.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var playlist = _playlistService.GetPlayListById(id);
+            var playlist = _playlistService.GetPlaylistById(id);
             if (playlist != null)
             {
                 _playlistService.DeletePlaylist(id);
@@ -204,7 +223,7 @@ namespace MusicStoreApplication.Web.Controllers
 
         private bool PlaylistExists(Guid id)
         {
-            return _playlistService.GetPlayListById(id) != null;
+            return _playlistService.GetPlaylistById(id) != null;
         }
     }
 }

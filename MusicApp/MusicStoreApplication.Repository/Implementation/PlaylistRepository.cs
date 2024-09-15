@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using MusicStoreApplication.Domain.Domain;
 using MusicStoreApplication.Repository.Interface;
 using System;
@@ -24,6 +25,7 @@ namespace MusicStoreApplication.Repository.Implementation
         {
             var result = entities
                 .Include(p => p.TracksInPlaylist).ThenInclude(tp => tp.Track)
+                .Include(p => p.User)
                 .SingleOrDefaultAsync(z => z.Id == id).Result;
 
             return result;
@@ -32,8 +34,10 @@ namespace MusicStoreApplication.Repository.Implementation
         public IEnumerable<Playlist> GetAll()
         {
             return entities
-                .Include(z => z.User)
-                .Include(z => z.TracksInPlaylist).ThenInclude(z => z.Track);
+                .Include(p => p.User)
+                .Include(p => p.TracksInPlaylist).ThenInclude(tp => tp.Track).ThenInclude(t => t.Album)
+                .Include(p => p.TracksInPlaylist).ThenInclude(tp => tp.Track).ThenInclude(t => t.Artists).ThenInclude(at => at.Artist)
+                .Include(p => p.TracksInPlaylist).ThenInclude(tp => tp.Track).ThenInclude(t => t.Genres).ThenInclude(gt => gt.Genre);
         }
 
         public Playlist Insert(Playlist entity)

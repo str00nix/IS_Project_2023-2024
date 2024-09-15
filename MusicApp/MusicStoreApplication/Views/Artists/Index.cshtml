@@ -1,4 +1,37 @@
-﻿@model IEnumerable<MusicStoreApplication.Domain.Domain.Artist>
+﻿@model MusicStoreApplication.Web.Models.ArtistIndexViewModel
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>
+    var showFilter = false;
+
+    function toggleShowFilter() { 
+        showFilter = !showFilter;
+        let filterButton = document.getElementById("showFilterButton");
+        let filters = document.getElementById("filters");
+        if (showFilter) {
+            filterButton.innerHTML = "Hide Filters <i class='fa-solid fa-chevron-up'></i>";
+            filters.hidden = false;
+        }
+        else 
+        {
+            filterButton.innerHTML = "Show Filters <i class='fa-solid fa-chevron-down'></i>";
+            filters.hidden = true;
+        }
+    }
+
+    function SwitchViewGrid() { 
+        let gridView = document.getElementById("gridView");
+        gridView.hidden = false;
+        let listView = document.getElementById("listView");
+        listView.hidden = true;
+    }
+    function SwitchViewList() { 
+        let gridView = document.getElementById("gridView");
+        gridView.hidden = true;
+        let listView = document.getElementById("listView");
+        listView.hidden = false;
+    }
+</script>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,20 +42,66 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<form id="searchForm" class="container">
+    <div class="row form-group">
+        <div class="col col-lg-9 col-md-8 col-sm-7 p-0">
+            <input class="form-control rounded-0" name="searchString" 
+                type="search" placeholder="Search..." aria-label="Search" />
+        </div>
+        <div class="col col-lg-3 col-md-4 col-sm-5 p-0">
+            <button onclick="toggleShowFilter()" class="btn btn-secondary btn-block w-100 rounded-0" type="button" id="showFilterButton">
+                Show Filters
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="filters" hidden>
+        <div class="row mt-2">
+            <div class="col-6">
+                <div class="form-group row ps-2">
+                    <label for="genreSelection" class="col-form-label col-2">Genres:</label>
+                    <div class="form-group col">
+                        <select id="genreSelect" name="genreSelect" class="selectpicker" multiple data-live-search="true">
+                            @foreach(var genre in Model.Genres)
+                            {
+                            <option value="@genre.Id">
+                                @genre.Name
+                            </option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-0 mt-2">
+        <div class="col col-lg-9 col-md-8 col-sm-7 p-0">
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-5 p-0">
+            <button class="btn btn-dark btn-block w-100 rounded-0" type="submit">
+                Search <i class="fas fa-search"></i>
+            </button>
+        </div>
+    <div/>
+
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Name
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Artists.Items) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @item.Name
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -33,3 +112,32 @@
 }
     </tbody>
 </table>
+
+
+<nav aria-label="Page navigation example" class="d-flex justify-content-center">
+  <ul class="pagination">
+    @if (Model.Artists.Page > 1)
+    {
+        <li class="page-item"><a class="page-link" href="?&page=@(Model.Artists.Page - 1)">Previous</a></li>
+    }
+    @{
+        var start = Model.Artists.Page < 5 ? 1 : Model.Artists.Page - 4;
+        var end = Model.Artists.TotalPages - Model.Artists.Page < 5 ? Model.Artists.TotalPages : Model.Artists.Page + 4;
+    }
+    @for (int i = start; i < end; i++)
+    {
+            @if (i == Model.Artists.Page)
+            {
+                <li class="page-item active"><a class="page-link" href="?&page=@i">@i</a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" href="?&page=@i">@i</a></li>
+            }
+    }
+    @if (Model.Artists.Page < Model.Artists.TotalPages)
+    {
+        <li class="page-item"><a class="page-link" href="?&page=@(Model.Artists.Page + 1)">Next</a></li>
+    }
+  </ul>
+</nav>

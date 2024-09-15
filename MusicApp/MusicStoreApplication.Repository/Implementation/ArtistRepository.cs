@@ -33,7 +33,11 @@ namespace MusicStoreApplication.Repository.Implementation
 
         public Artist Get(Guid? id)
         {
-            var result = entities.FirstOrDefaultAsync(z => z.Id == id).Result;
+            var result = entities
+                .Include(a => a.Tracks).ThenInclude(t => t.Track)
+                .Include(a => a.Tracks).ThenInclude(t => t.Track).ThenInclude(t => t.Album)
+                .Include(a => a.Tracks).ThenInclude(t => t.Track).ThenInclude(t => t.Genres).ThenInclude(gt => gt.Genre)
+                .FirstOrDefaultAsync(z => z.Id == id).Result;
 
             return result;
         }

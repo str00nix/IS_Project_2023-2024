@@ -7,23 +7,44 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MusicStoreApplication.Domain.Domain;
 using MusicStoreApplication.Service.Interface;
+using MusicStoreApplication.Web.Models;
 
 namespace MusicStoreApplication.Web.Controllers
 {
     public class ArtistsController : Controller
     {
         private readonly IArtistService _artistService;
+        private readonly IGenreService _genreService;
 
-        public ArtistsController(IArtistService artistService)
+        public ArtistsController(
+            IArtistService artistService,
+            IGenreService genreService
+        )
         {
             _artistService = artistService;
+            _genreService = genreService;
         }
 
 
         // GET: Artists
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+            [FromQuery] string? searchString, 
+            [FromQuery] string[]? genreSelect, 
+            [FromQuery] int page = 1, 
+            [FromQuery] int pageSize = 15, 
+            [FromQuery] SortOrder sortOrder = SortOrder.Ascending, 
+            [FromQuery] string? sortBy = null
+        )
         {
-            return View(_artistService.GetArtists());
+            var model = new ArtistIndexViewModel();
+            model.Genres = _genreService.GetGenres();
+
+            //model.Albums = new PagedSortedList<Album>();
+            //model.Albums.Items = _albumsService.GetAlbums();
+            model.Artists = _artistService.GetArtistsPaginated(searchString, genreSelect, page, 
+                                                               pageSize, sortOrder, sortBy);
+
+            return View(model);
         }
 
         // GET: Artists/Details/5

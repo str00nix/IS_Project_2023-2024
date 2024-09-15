@@ -17,6 +17,17 @@
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
+            Genres
+        </dt>
+        <dd class = "col-sm-10">
+            @if (Model.Tracks != null && Model.Tracks.Count() > 0 && Model.Tracks.SelectMany(t => t.Genres).Count() > 0)
+            {
+                int index = 1;
+                var genres = Model.Tracks.SelectMany(t => t.Genres).Select(gt => gt.Genre).ToHashSet();
+                @(String.Join(", ", genres.Select(g => g.Name)))
+            }
+        </dd>
+        <dt class = "col-sm-2">
             Artists
         </dt>
         <dd class = "col-sm-10">
@@ -24,22 +35,14 @@
             {
                 int index = 1;
                 var artists = Model.Tracks.SelectMany(t => t.Artists).Select(at => at.Artist).ToHashSet();
-                int length = artists.Count();
-                @foreach (var artist in artists)
-                {
-                    <span>@artist.Name</span>    
-                    @if(index != length)
-                    {
-                        <span>,&nbsp</span>
-                    }
-                    index++;
-                }
+                @(String.Join(", ", artists.Select(a => a.Name)))
             }
         </dd>
     </dl>
-    <h5>Tracks:</h5>
-    <hr>
 </div>
+
+<h4 class="font-weight-bold">Tracks:</h4>
+<hr>
 <table class="table">
     <thead>
         <tr>
@@ -68,26 +71,11 @@
 					<td>
 						@if (item.Artists != null && item.Artists.Count() > 0)
 						{
-							int index = 1;
-							int length = item.Artists.Count();
-							@foreach(var artist in item.Artists.Select(at => at.Artist))
-							{
-								@artist.Name
-									@if (index != length)
-									{
-										<span>,&nbsp</span>
-									}
-								}
-								index++;
-
-							}
-							else
-							{
-								<span>None</span>
-							}
+                            @(String.Join(", ", item.Artists.Select(at => at.Artist.Name)))
+                        }
 					</td>
 				</tr>
-		}
+            }
 			</tbody>
         }
 </table>

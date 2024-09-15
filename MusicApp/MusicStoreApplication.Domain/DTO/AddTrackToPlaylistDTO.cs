@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MusicStoreApplication.Domain.DTO
 {
-    public class AddTrackToPlaylistDTO
+    public class AddTrackToPlaylistDto
     {
         public Guid PlaylistID { get; set; }
         public Guid TrackID { get; set; }
