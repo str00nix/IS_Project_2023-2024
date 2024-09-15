@@ -24,12 +24,23 @@
         gridView.hidden = false;
         let listView = document.getElementById("listView");
         listView.hidden = true;
+
+        let gridViewBtn = document.getElementById("gridViewBtn");
+        gridViewBtn.checked = true;
+        let listViewBtn = document.getElementById("listViewBtn");
+        listViewBtn.checked = false;
     }
+
     function SwitchViewList() { 
         let gridView = document.getElementById("gridView");
         gridView.hidden = true;
         let listView = document.getElementById("listView");
         listView.hidden = false;
+
+        let gridViewBtn = document.getElementById("gridViewBtn");
+        gridViewBtn.checked = false;
+        let listViewBtn = document.getElementById("listViewBtn");
+        listViewBtn.checked = true;
     }
 </script>
 
@@ -42,7 +53,7 @@
 <form id="searchForm" class="container">
     <div class="row form-group">
         <div class="col col-lg-9 col-md-8 col-sm-7 p-0">
-            <input class="form-control rounded-0" name="searchString" 
+            <input class="form-control rounded-0" name="searchString" id="searchInput"
                 type="search" placeholder="Search..." aria-label="Search" />
         </div>
         <div class="col col-lg-3 col-md-4 col-sm-5 p-0">
@@ -89,27 +100,39 @@
     </div>
 
     <div class="row g-0 mt-2">
-        <div class="col col-lg-9 col-md-8 col-sm-7 p-0">
+
+        <div class="col btn-group btn-group-toggle m-2" data-toggle="buttons">
+          <input name="gridView" id="gridViewBtn" type="checkbox" class="btn-check active"/>
+          <label for="gridView" onclick="SwitchViewGrid()" class="btn btn-secondary" for="btn-check">
+              <i class="fa-solid fa-table"></i>
+          </label>
+          <input name="listView" id="listViewBtn" type="checkbox" class="btn-check active"/>
+          <label for="listView" onclick="SwitchViewList()" class="btn btn-secondary" for="btn-check">
+              <i class="fa-solid fa-list"></i>
+          </label>
+        </div>
+        <div class="col-auto">
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-4 p-0">
+            <div class="row">
+                <label for="pageSize" class="col-form-label col-auto">PageSize:</label>
+                <div class="form-group col">
+                    <select class="form-control w-100" name="pageSize" id="pageSizeSelect">
+                        <option>20</option>
+                        <option>50</option>
+                        <option>100</option>
+                    </select>
+                </div>
+            </div>
         </div>
         <div class="col-lg-3 col-md-4 col-sm-5 p-0">
             <button class="btn btn-dark btn-block w-100 rounded-0" type="submit">
                 Search <i class="fas fa-search"></i>
             </button>
         </div>
-    <div/>
+    </div>
 
 </form>
-
-<div class="row">
-    <div class="col btn-group btn-group-toggle m-2" data-toggle="buttons">
-      <button onclick="SwitchViewGrid()" class="btn btn-secondary active">
-          <i class="fa-solid fa-table"></i>
-      </button>
-      <button onclick="SwitchViewList()" class="btn btn-secondary">
-        <i class="fa-solid fa-list"></i>
-      </button>
-    </div>
-</div>
 
 <div id="gridView" class="container mt-5">
     <div class="row">
@@ -236,3 +259,41 @@
     }
   </ul>
 </nav>
+
+<script>
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+
+    const searchString = urlParams.get('searchString')
+    document.getElementById("searchInput").value = searchString;
+
+    const pageSize = urlParams.get('pageSize')
+    document.getElementById("pageSizeSelect").value = pageSize;
+
+    const genreSelect = urlParams.getAll('genreSelect');
+    const optionsGenre = document.getElementById("genreSelect").getElementsByTagName("option");
+    for (let i = 0; i < optionsGenre.length; i++) { 
+        if (genreSelect.includes(optionsGenre[i].value)) { 
+            optionsGenre[i].selected = true;
+        }
+    }
+
+    const artistSelect = urlParams.getAll('artistSelect');
+    const optionsArtists = document.getElementById("artistSelect").getElementsByTagName("option");
+    for (let i = 0; i < optionsArtists.length; i++) { 
+        if (artistSelect.includes(optionsArtists[i].value)) { 
+            optionsArtists[i].selected = true;
+        }
+    }
+
+    if (genreSelect.length != 0 || artistSelect.length != 0 ) { 
+        if (!showFilter) { 
+            toggleShowFilter();
+        }
+    }
+
+    const listView = urlParams.get('listView')
+    if (listView == "on") {
+        SwitchViewList();
+    }
+</script>

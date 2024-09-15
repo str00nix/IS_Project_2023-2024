@@ -46,7 +46,7 @@
 <form id="searchForm" class="container">
     <div class="row form-group">
         <div class="col col-lg-9 col-md-8 col-sm-7 p-0">
-            <input class="form-control rounded-0" name="searchString" 
+            <input class="form-control rounded-0" name="searchString" id="searchInput"
                 type="search" placeholder="Search..." aria-label="Search" />
         </div>
         <div class="col col-lg-3 col-md-4 col-sm-5 p-0">
@@ -78,14 +78,26 @@
     </div>
 
     <div class="row g-0 mt-2">
-        <div class="col col-lg-9 col-md-8 col-sm-7 p-0">
+        <div class="col col-lg-7 col-md-6 col-sm-5 p-0">
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-4 p-0">
+            <div class="row">
+                <label for="pageSize" class="col-form-label col-auto">PageSize:</label>
+                <div class="form-group col">
+                    <select class="form-control w-100" name="pageSize" id="pageSizeSelect">
+                        <option>20</option>
+                        <option>50</option>
+                        <option>100</option>
+                    </select>
+                </div>
+            </div>
         </div>
         <div class="col-lg-3 col-md-4 col-sm-5 p-0">
             <button class="btn btn-dark btn-block w-100 rounded-0" type="submit">
                 Search <i class="fas fa-search"></i>
             </button>
         </div>
-    <div/>
+    </div>
 
 </form>
 
@@ -141,3 +153,28 @@
     }
   </ul>
 </nav>
+
+<script>
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+
+    const searchString = urlParams.get('searchString')
+    document.getElementById("searchInput").value = searchString;
+
+    const pageSize = urlParams.get('pageSize')
+    document.getElementById("pageSizeSelect").value = pageSize;
+
+    const genreSelect = urlParams.getAll('genreSelect');
+    const optionsGenre = document.getElementById("genreSelect").getElementsByTagName("option");
+    for (let i = 0; i < optionsGenre.length; i++) { 
+        if (genreSelect.includes(optionsGenre[i].value)) { 
+            optionsGenre[i].selected = true;
+        }
+    }
+
+    if (genreSelect.length != 0) { 
+        if (!showFilter) { 
+            toggleShowFilter();
+        }
+    }
+</script>
