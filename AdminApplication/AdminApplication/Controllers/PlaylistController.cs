@@ -12,23 +12,23 @@ namespace AdminApplication.Controllers
             return View();
         }
 
-        [HttpPost, ActionName("Export"), Produces("application/json")]
-        public async Task<JsonResult> ExportPlaylistsAsJSON()
-        {
-            List<Playlist> playlists = new List<Playlist>();
+        //[HttpPost, ActionName("Export"), Produces("application/json")]
+        //public async Task<JsonResult> ExportPlaylistsAsJSON()
+        //{
+        //    List<Playlist> playlists = new List<Playlist>();
 
-            HttpClient client = new HttpClient();
+        //    HttpClient client = new HttpClient();
             
-            string URL = "http://localhost:5027/api/Admin/GetAllPlaylistDTOs";
+        //    string URL = "http://localhost:5027/api/Admin/GetAllPlaylistDTOs";
 
-            HttpResponseMessage response = client.GetAsync(URL).Result;
+        //    HttpResponseMessage response = client.GetAsync(URL).Result;
 
-            HttpContent content = new StringContent(JsonConvert.SerializeObject(response), Encoding.UTF8, "application/json");
-            //playlists = content;
-            //var result = response.Content.ReadAsAsync<bool>().Result;
+        //    //HttpContent content = new StringContent(JsonConvert.SerializeObject(response), Encoding.UTF8, "application/json");
+        //    //playlists = content;
+        //    //var result = response.Content.ReadAsAsync<bool>().Result;
 
-            return Ok(content);
-        }
+        //    return Ok(content);
+        //}
 
     }
 }
