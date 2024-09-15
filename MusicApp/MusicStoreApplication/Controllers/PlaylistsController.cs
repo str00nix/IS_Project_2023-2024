@@ -67,7 +67,7 @@ namespace MusicStoreApplication.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddTrackToPlaylist([Bind("AddTrackToPlaylistDto.PlaylistID,AddTrackToPlaylistDto.TrackID")] AddTrackToPlaylistDto addTrackToPlaylistDto)
+        public async Task<IActionResult>AddTrackToPlaylist([Bind("PlaylistID,TrackID")] AddTrackToPlaylistDto addTrackToPlaylistDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? null;
             var playlist = _playlistService.GetPlaylistById(addTrackToPlaylistDto.PlaylistID);
@@ -79,8 +79,7 @@ namespace MusicStoreApplication.Web.Controllers
 
             var result = _playlistService.AddTrackToPlaylist(userId, addTrackToPlaylistDto);
 
-            return RedirectToAction("Details", "Playlist", new { id = addTrackToPlaylistDto.PlaylistID });
-
+            return RedirectToAction("Details", "Playlists", new { id = addTrackToPlaylistDto.PlaylistID });
         }
 
         [HttpPost]
