@@ -124,7 +124,21 @@ namespace MusicStoreApplication.Web.Controllers
             {
                 return NotFound();
             }
-            return View(track);
+            TrackCreateViewModel model = new TrackCreateViewModel();
+            model.Track = track;
+            model.TrackDto = new TrackDto();
+            model.TrackDto.TrackId = track.Id;
+            model.TrackDto.Name = track.Name;
+            model.TrackDto.DurationInMilliseconds = (double)(track.DurationInMilliseconds != null ? track.DurationInMilliseconds : 0.0);
+            model.TrackDto.ArtistIds = track.Artists.Select(at => at.ArtistId).ToList();
+            model.TrackDto.GenreIds = track.Genres.Select(gt => gt.GenreId).ToList();
+            model.TrackDto.AlbumId = track.Album.Id;
+
+            model.Albums = _albumService.GetAlbums();
+            model.Artists = _artistService.GetArtists();
+            model.Genres = _genreService.GetGenres();
+
+            return View(model);
         }
 
         //TODO: This should be deleted in the final version 

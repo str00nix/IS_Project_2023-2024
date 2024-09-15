@@ -9,6 +9,7 @@ namespace MusicStoreApplication.Domain.DTO
 {
     public class TrackDto
     {
+        public Guid? TrackId { get; set; }
         public string Name { get; set; }
         public double DurationInMilliseconds { get; set; }
         public List<Guid> GenreIds { get; set; }

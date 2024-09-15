@@ -29,10 +29,10 @@
                 <label asp-for="TrackDto.GenreIds" class="col-form-label col-3">Genres:</label>
                 <div class="form-group col">
                     <select asp-for="TrackDto.GenreIds" id="genreSelect" class="selectpicker" multiple data-live-search="true">
-                        @foreach(var artist in Model.Genres)
+                        @foreach(var genre in Model.Genres)
                         {
-                        <option value="@artist.Id">
-                            @artist.Name
+                        <option value="@genre.Id">
+                            @genre.Name
                         </option>
                         }
                     </select>

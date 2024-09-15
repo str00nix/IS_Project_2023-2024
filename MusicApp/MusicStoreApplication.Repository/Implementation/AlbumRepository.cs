@@ -53,7 +53,7 @@ namespace MusicStoreApplication.Repository.Implementation
         {
             var result = entities
                 .Include(a => a.Tracks).ThenInclude(t => t.Artists).ThenInclude(at => at.Artist)
-                .Include(a => a.Tracks).ThenInclude(t => t.Genres)
+                .Include(a => a.Tracks).ThenInclude(t => t.Genres).ThenInclude(gt => gt.Genre)
                 .AsEnumerable();
 
             return result;
