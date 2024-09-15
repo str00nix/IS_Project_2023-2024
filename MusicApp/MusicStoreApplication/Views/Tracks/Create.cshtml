@@ -21,7 +21,7 @@
             <div class="form-group row ps-2">
                 <label asp-for="TrackDto.DurationInMilliseconds" class="col-form-label col-3">Duration:</label>
                 <div class="form-group col">
-                    <input asp-for="TrackDto.DurationInMilliseconds" class="form-control" type="time"/>
+                    <input asp-for="TrackDto.DurationInMilliseconds" class="form-control" type="number"/>
                 </div>
                 <span asp-validation-for="TrackDto.DurationInMilliseconds" class="text-danger"></span>
             </div>

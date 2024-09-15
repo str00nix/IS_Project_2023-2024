@@ -99,7 +99,7 @@ namespace MusicStoreApplication.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,GenreIds,ArtistIds,AlbumId")] TrackDto trackDto)
+        public async Task<IActionResult> Create([Bind("Name,DurationInMilliseconds,GenreIds,ArtistIds,AlbumId")] TrackDto trackDto)
         {
             var track = new Track();
             if (ModelState.IsValid)

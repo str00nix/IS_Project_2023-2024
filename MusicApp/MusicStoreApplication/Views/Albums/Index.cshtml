@@ -136,10 +136,10 @@
                         </h6>
 
                         @{
-                            var totalTime = album
+                            var totalTime = album.Tracks.Count() > 0 ? album
                                 .Tracks
                                 .Select(t => t != null ? (t.DurationInMilliseconds != null ? t.DurationInMilliseconds : 0.0) : 0.0)
-                                .Aggregate((x, y) => x + y);
+                                .Aggregate((x, y) => x + y) : 0;
 
                             TimeSpan t = TimeSpan.FromMilliseconds((double)totalTime);
                         }
@@ -184,12 +184,12 @@
             <td>@album.Name</td>
             <td>@(String.Join(", ", album.Tracks.SelectMany(t => t.Artists.Select(at => at.Artist.Name)).ToHashSet()))</td>
             @{
-                var totalTime = album
+                    var totalTime = album.Tracks.Count() > 0 ? album
                     .Tracks
                     .Select(t => t != null ? (t.DurationInMilliseconds != null ? t.DurationInMilliseconds : 0.0) : 0.0)
-                    .Aggregate((x, y) => x + y);
+                    .Aggregate((x, y) => x + y) : 0;
 
-                TimeSpan t = TimeSpan.FromMilliseconds((double)totalTime);
+                    TimeSpan t = TimeSpan.FromMilliseconds((double)totalTime);
             }
             <td>@String.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds)</td>
             <td>
