@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MusicStoreApplication.Domain.Domain.Album>
+﻿@model MusicStoreApplication.Web.Models.AlbumIndexViewModel
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script>
@@ -56,20 +56,32 @@
     <div id="filters" hidden>
         <div class="row mt-2">
             <div class="col-6">
-                <div class="form-group row">
-                    <label for="genreInput" class="col-2 col-form-label">Genre:</label>
-                    <div class="col">
-                    <input class="form-control rounded-0" name="genreInput" 
-                        type="search" placeholder="Genre..." aria-label="Search" />
+                <div class="form-group row ps-2">
+                    <label for="genreSelection" class="col-form-label col-2">Genres:</label>
+                    <div class="form-group col">
+                        <select id="genreSelect" name="genreSelect" class="selectpicker" multiple data-live-search="true">
+                            @foreach(var genre in Model.Genres)
+                            {
+                            <option value="@genre.Id">
+                                @genre.Name
+                            </option>
+                            }
+                        </select>
                     </div>
                 </div>
             </div>
-            <div class="col-6 ps-4">
-                <div class="form-group row">
-                    <label for="artistInput" class="col-2 col-form-label">Artist:</label>
-                    <div class="col">
-                    <input class="form-control rounded-0" name="artistInput" 
-                        type="search" placeholder="Artist..." aria-label="Search" />
+            <div class="col-6">
+                <div class="form-group row ps-2">
+                    <label for="artistSelection" class="col-form-label col-2">Artists:</label>
+                    <div class="form-group col">
+                        <select id="artistSelect" name="artistSelect" class="selectpicker" multiple data-live-search="true">
+                            @foreach(var artist in Model.Artists)
+                            {
+                            <option value="@artist.Name">
+                                @artist.Name
+                            </option>
+                            }
+                        </select>
                     </div>
                 </div>
             </div>
@@ -101,7 +113,7 @@
 
 <div id="gridView" class="container mt-5">
     <div class="row">
-        @foreach (var album in Model)
+        @foreach (var album in Model.Albums.Items)
         {
             <div class="col-lg-2 col-md-3 mb-4">
                 <div class="card h-100">
@@ -179,7 +191,7 @@
      </tr>
  </thead>
  <tbody>
-    @foreach (var album in Model)
+    @foreach (var album in Model.Albums.Items)
     {
         <tr>
             <td>@album.Name</td>
@@ -204,6 +216,33 @@
     </tbody>
 </table>
 
+<nav aria-label="Page navigation example" class="d-flex justify-content-center">
+  <ul class="pagination">
+    @if (Model.Albums.Page > 1)
+    {
+        <li class="page-item"><a class="page-link" href="?&page=@(Model.Albums.Page - 1)">Previous</a></li>
+    }
+    @{
+        var start = Model.Albums.Page < 5 ? 1 : Model.Albums.Page - 4;
+        var end = Model.Albums.TotalPages - Model.Albums.Page < 5 ? Model.Albums.TotalPages : Model.Albums.Page + 4;
+    }
+    @for (int i = start; i < end; i++)
+    {
+            @if (i == Model.Albums.Page)
+            {
+                <li class="page-item active"><a class="page-link" href="?&page=@i">@i</a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" href="?&page=@i">@i</a></li>
+            }
+    }
+    @if (Model.Albums.Page < Model.Albums.TotalPages)
+    {
+        <li class="page-item"><a class="page-link" href="?&page=@(Model.Albums.Page + 1)">Next</a></li>
+    }
+  </ul>
+</nav>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>

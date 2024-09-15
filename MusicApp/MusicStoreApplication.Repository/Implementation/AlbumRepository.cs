@@ -36,6 +36,7 @@ namespace MusicStoreApplication.Repository.Implementation
         {
             var result = entities
                 .Include(a => a.Tracks).ThenInclude(t => t.Artists).ThenInclude(at => at.Artist)
+                .Include(a => a.Tracks).ThenInclude(t => t.Genres).ThenInclude(gt => gt.Genre)
                 .FirstOrDefaultAsync(z => z.Id == id).Result;
 
             return result;

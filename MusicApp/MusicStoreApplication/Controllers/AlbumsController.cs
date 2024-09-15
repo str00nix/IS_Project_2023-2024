@@ -8,22 +8,48 @@ using Microsoft.EntityFrameworkCore;
 using MusicStoreApplication.Domain.Domain;
 using MusicStoreApplication.Service.Interface;
 using MusicStoreApplication.Service.Implementation;
+using MusicStoreApplication.Web.Models;
 
 namespace MusicStoreApplication.Web.Controllers
 {
     public class AlbumsController : Controller
     {
         private readonly IAlbumService _albumsService;
+        private readonly IArtistService _artistService;
+        private readonly IGenreService _genreService;
 
-        public AlbumsController(IAlbumService albumsService)
+        public AlbumsController(
+            IAlbumService albumsService,
+            IArtistService artistService,
+            IGenreService genreService
+        )
         {
             _albumsService = albumsService;
+            _artistService = artistService;
+            _genreService = genreService;
         }
 
         // GET: Albums
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+            [FromQuery] string? searchString, 
+            [FromQuery] string[]? artistSelect, 
+            [FromQuery] string[]? genreSelect, 
+            [FromQuery] int page = 1, 
+            [FromQuery] int pageSize = 15, 
+            [FromQuery] SortOrder sortOrder = SortOrder.Ascending, 
+            [FromQuery] string? sortBy = null
+        )
         {
-            return View(_albumsService.GetAlbums());
+            var model = new AlbumIndexViewModel();
+            model.Artists = _artistService.GetArtists();
+            model.Genres = _genreService.GetGenres();
+
+            //model.Albums = new PagedSortedList<Album>();
+            //model.Albums.Items = _albumsService.GetAlbums();
+            model.Albums = _albumsService.GetAlbumsPaginated(searchString, artistSelect, 
+                                                             genreSelect, page, pageSize, sortOrder, sortBy);
+
+            return View(model);
         }
 
         // GET: Albums/Details/5
