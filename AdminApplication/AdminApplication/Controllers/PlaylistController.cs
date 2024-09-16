@@ -1,6 +1,7 @@
 ﻿using AdminApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Net.Http;
 using System.Text;
 
 namespace AdminApplication.Controllers
@@ -12,23 +13,19 @@ namespace AdminApplication.Controllers
             return View();
         }
 
-        //[HttpPost, ActionName("Export"), Produces("application/json")]
-        //public async Task<JsonResult> ExportPlaylistsAsJSON()
-        //{
-        //    List<Playlist> playlists = new List<Playlist>();
+        [HttpGet, ActionName("ExportAsJson"), Produces("application/json")]
+        public async Task<List<PlaylistDTO>?> ExportPlaylistsAsJSON()
+        {
+            HttpClient client = new HttpClient();
 
-        //    HttpClient client = new HttpClient();
-            
-        //    string URL = "http://localhost:5027/api/Admin/GetAllPlaylistDTOs";
+            string URL = "http://localhost:5027/api/Admin/GetAllPlaylistDTOs";
 
-        //    HttpResponseMessage response = client.GetAsync(URL).Result;
+            var json = await client.GetStringAsync(URL);
 
-        //    //HttpContent content = new StringContent(JsonConvert.SerializeObject(response), Encoding.UTF8, "application/json");
-        //    //playlists = content;
-        //    //var result = response.Content.ReadAsAsync<bool>().Result;
+            List<PlaylistDTO>? result = JsonConvert.DeserializeObject<List<PlaylistDTO>>(json);
 
-        //    return Ok(content);
-        //}
+            return result;
+        }
 
     }
 }

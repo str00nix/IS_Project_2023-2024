@@ -1,0 +1,30 @@
+﻿@model IEnumerable<MusicStoreApplication.Domain.Domain.Integration.PartnerTrackDto>
+
+
+@{
+    ViewData["Title"] = "Tracks";
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Track Name</th>
+            <th>Artist</th>
+            <th>Album</th>
+            <th>Duration</th>
+            <th>Rating</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var track in Model)
+        {
+            <tr>
+                <td>@(track.Name ?? "")</td>
+                <td>@(track.ArtistNames != null ? String.Join(", ", track.ArtistNames) : "")</td>
+                <td>@(track.AlbumName ?? "")</td>
+                <td>@track.DurationInSeconds</td>
+                <td>@track.Rating</td>
+            </tr>
+        }
+    </tbody>
+</table>
