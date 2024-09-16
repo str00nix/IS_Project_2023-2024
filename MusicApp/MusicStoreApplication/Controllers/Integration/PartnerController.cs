@@ -11,13 +11,15 @@ namespace MusicStoreApplication.Web.Controllers.Integration
         {
             return View();
         }
+
+        string BaseUrl = "https://musicstoreadminapplication20240916155949.azurewebsites.net";
         [HttpGet]
         public IActionResult DisplayPartnerTracks()
         {
             List<PartnerTrackDto> partnerTrackDtos = new List<PartnerTrackDto>();
 
             HttpClient client = new HttpClient();
-            string URL = "http://localhost:5004/Partner/ReturnPartnerTrackDTO";
+            string URL = BaseUrl + "/Partner/ReturnPartnerTrackDTO";
 
             var json = client.GetStringAsync(URL);
 

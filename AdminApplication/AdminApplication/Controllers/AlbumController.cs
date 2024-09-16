@@ -12,11 +12,12 @@ namespace AdminApplication.Controllers
         {
             ComponentInfo.SetLicense("FREE-LIMITED-KEY");
         }
-
+        string BaseUrl = "https://musicstoreapplicationweb20240916150058.azurewebsites.net";
+        string LocalBaseUrl = "https://localhost:5027";
         public IActionResult Index()
         {
             HttpClient client = new HttpClient();
-            string URL = "http://localhost:5027/api/Admin/GetAllAlbums";
+            string URL = BaseUrl + "/api/Admin/GetAllAlbums";
             HttpResponseMessage response = client.GetAsync(URL).Result;
 
             var data = response.Content.ReadAsAsync<List<Album>>().Result;
@@ -26,7 +27,7 @@ namespace AdminApplication.Controllers
         public IActionResult Details(Guid Id)
         {
             HttpClient client = new HttpClient();
-            string URL = "http://localhost:5027/api/Admin/GetAlbumDetails/{id}".Replace("{id}", Id.ToString());
+            string URL = BaseUrl + "/api/Admin/GetAlbumDetails/{id}".Replace("{id}", Id.ToString());
             HttpResponseMessage response = client.GetAsync(URL).Result;
 
             var data = response.Content.ReadAsAsync<Album>().Result;
@@ -43,7 +44,7 @@ namespace AdminApplication.Controllers
         public FileContentResult ExportAlbumDetailsToPdf(Guid Id)
         {
             HttpClient client = new HttpClient();
-            string URL = "http://localhost:5027/api/Admin/GetAlbumDetails/{id}".Replace("{id}", Id.ToString());
+            string URL = BaseUrl + "/api/Admin/GetAlbumDetails/{id}".Replace("{id}", Id.ToString());
             HttpResponseMessage response = client.GetAsync(URL).Result;
 
             Album data = response.Content.ReadAsAsync<Album>().Result;

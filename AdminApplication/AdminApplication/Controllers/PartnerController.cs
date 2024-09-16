@@ -11,12 +11,14 @@ namespace AdminApplication.Controllers
         {
             return View();
         }
+
+        string BaseUrl = "https://anymusicweb20240916161436.azurewebsites.net";
         [HttpGet, ActionName("ImportPartnerTracksAsJSON"), Produces("application/json")]
         public async Task<List<AdminApplication.Models.Integration.Track>> ImportPartnerTracksAsJSON()
         {
             HttpClient client = new HttpClient();
 
-            string URL = "http://localhost:5073/Tracks/GetAllTracks";
+            string URL = BaseUrl + "/Tracks/GetAllTracks";
 
             var json = await client.GetStringAsync(URL);
 

@@ -16,6 +16,8 @@ namespace AdminApplication.Controllers
         {
             ComponentInfo.SetLicense("FREE-LIMITED-KEY");
         }
+        string BaseUrl = "https://musicstoreapplicationweb20240916150058.azurewebsites.net";
+        string LocalBaseUrl = "https://localhost:5027";
 
         public IActionResult Index()
         {
@@ -27,7 +29,7 @@ namespace AdminApplication.Controllers
         {
             HttpClient client = new HttpClient();
 
-            string URL = "http://localhost:5027/api/Admin/GetAllPlaylistDTOs";
+            string URL = BaseUrl + "/api/Admin/GetAllPlaylistDTOs";
 
             var json = await client.GetStringAsync(URL);
 
@@ -53,7 +55,7 @@ namespace AdminApplication.Controllers
                 worksheet.Cell(1, 5).Value = "Track Names";
 
                 HttpClient client = new HttpClient();
-                string URL = "http://localhost:5027/api/Admin/GetAllPlaylistDTOs";
+                string URL = BaseUrl + "/api/Admin/GetAllPlaylistDTOs";
                 HttpResponseMessage response = client.GetAsync(URL).Result;
 
                 var data = response.Content.ReadAsAsync<List<PlaylistDTO>>().Result;

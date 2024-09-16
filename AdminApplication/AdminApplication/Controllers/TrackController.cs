@@ -13,6 +13,8 @@ namespace AdminApplication.Controllers
         {
             return View();
         }
+        string BaseUrl = "https://musicstoreapplicationweb20240916150058.azurewebsites.net";
+        string LocalBaseUrl = "https://localhost:5027";
 
         [HttpPost, ActionName("Import")]
         public async Task<IActionResult> ImportTracksFromCSV([FromForm] IFormFile formFile)
@@ -20,7 +22,7 @@ namespace AdminApplication.Controllers
             List<CSVLineDTO> trackDTOs = getAllTrackInfoFromCSVFile(formFile);
 
             HttpClient client = new HttpClient();
-            string URL = "http://localhost:5027/api/Admin/ImportTracksFromCSV";
+            string URL = BaseUrl + "/api/Admin/ImportTracksFromCSV";
 
             HttpContent content = new StringContent(JsonConvert.SerializeObject(trackDTOs), Encoding.UTF8, "application/json");
 
