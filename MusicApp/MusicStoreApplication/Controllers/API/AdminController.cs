@@ -43,10 +43,13 @@ namespace MusicStoreApplication.Web.Controllers.API
         {
             return _albumService.GetAlbums();
         }
-        [HttpPost("[action]")]
-        public Album GetAlbumDetails(BaseEntity baseEntity)
+        [HttpGet("GetAlbumDetails/{id}")]
+        public Album GetAlbumDetails(Guid? id)
         {
-            return _albumService.GetAlbumById(baseEntity.Id);
+            if (id == null)
+                return null;
+
+            return _albumService.GetAlbumById((Guid) id);
         }
         [HttpGet("[action]")]
         public List<PlaylistDTO> GetAllPlaylistDTOs()

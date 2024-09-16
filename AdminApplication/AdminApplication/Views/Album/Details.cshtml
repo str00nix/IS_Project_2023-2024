@@ -63,7 +63,7 @@
                         @item.Name
 					</td>
 					<td>
-                        @item.Genre
+                        @(String.Join(", ", item.Genres.Select(gt => gt.Genre.Name).ToHashSet()))
 					</td>
 					<td>
 						@if (item.Artists != null && item.Artists.Count() > 0)
@@ -91,6 +91,11 @@
 			</tbody>
         }
 </table>
+
+
+<div>
+    <a asp-action="ExportAlbumDetailsToPdf" asp-route-id="@Model?.Id">Export to pdf</a>
+</div>
 
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |

@@ -45,6 +45,8 @@ namespace AdminApplication.Controllers
             //List<PlaylistDTO>? result = JsonConvert.DeserializeObject<List<PlaylistDTO>>(json);
 
             //return result;
+
+            return null;
         }
 
     }

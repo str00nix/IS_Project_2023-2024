@@ -32,24 +32,11 @@
 						</div>                
                         <div class="card-subtitle p-2 d-flex">
                             <h6 class="text-muted me-1">
-								@{int index = 1;}
-								@{int length = album.Tracks.SelectMany(t => t.Artists).ToHashSet().Count();}
-								@foreach (var artist in album.Tracks.SelectMany(t => t.Artists.Select(at => at.Artist)).ToHashSet())
-								{
-								 <span>@artist.Name</span>
-								@if (index != length)
-								{
-								 <span>,&nbsp</span>
-								}
-								index++;
-							}
+                                @(String.Join(", ", album.Tracks.SelectMany(t => t.Artists.Select(at => at.Artist.Name)).ToHashSet()))
 							</h6>
 							<div class="vr"></div>
                             <h6 class="text-muted ms-1">
-								@foreach (var genre in album.Tracks.Select(t => t.Genre))
-								{
-								 <span>@genre</span>
-								}
+                                @(String.Join(", ", album.Tracks.SelectMany(t => t.Genres.Select(gt => gt.Genre.Name)).ToHashSet()))
 							</h6>
 						</div>
                     </div>
