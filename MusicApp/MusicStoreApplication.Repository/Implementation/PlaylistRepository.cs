@@ -25,6 +25,11 @@ namespace MusicStoreApplication.Repository.Implementation
         {
             var result = entities
                 .Include(p => p.TracksInPlaylist).ThenInclude(tp => tp.Track)
+                .Include(p => p.TracksInPlaylist).ThenInclude(tp => tp.Track).ThenInclude(x => x.Genres)
+                .Include(p => p.TracksInPlaylist).ThenInclude(tp => tp.Track).ThenInclude(x => x.Genres).ThenInclude(x => x.Genre)
+                .Include(p => p.TracksInPlaylist).ThenInclude(tp => tp.Track).ThenInclude(x => x.Artists)
+                .Include(p => p.TracksInPlaylist).ThenInclude(tp => tp.Track).ThenInclude(x => x.Artists).ThenInclude(x => x.Artist)
+                .Include(p => p.TracksInPlaylist).ThenInclude(tp => tp.Track).ThenInclude(x => x.Album)
                 .Include(p => p.User)
                 .SingleOrDefaultAsync(z => z.Id == id).Result;
 

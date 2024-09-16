@@ -56,5 +56,18 @@ namespace MusicStoreApplication.Web.Controllers.API
         {
             return _playlistService.GetPlaylistDTOs();
         }
+        [HttpGet("[action]")]
+        public List<Playlist> GetAllPlaylists()
+        {
+            return _playlistService.GetPlaylists();
+        }
+        [HttpGet("GetPlaylistDetails/{id}")]
+        public Playlist GetPlaylistDetails(Guid? id)
+        {
+            if (id == null)
+                return null;
+
+            return _playlistService.GetPlaylistById((Guid)id);
+        }
     }
 }

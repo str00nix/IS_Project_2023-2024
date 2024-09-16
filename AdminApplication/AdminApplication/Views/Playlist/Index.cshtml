@@ -4,11 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Playlists</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<a class="nav-link" asp-area="" asp-controller="Playlist" asp-action="ExportAsExcel">Export full playlist info (Excel)</a>
+
 <table class="table">
     <thead>
         <tr>
@@ -43,7 +42,3 @@
 }
     </tbody>
 </table>
-
-<div>
-    <button class="btn-success"<a asp-action="AddTrackToPlaylistTest">Test Add Track to Playlist</a></button>
-</div>

@@ -1,0 +1,38 @@
+﻿@model AdminApplication.Models.Playlist
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Playlist</h4>
+    <hr/>
+
+    <dl class="row">
+        <dt class="col-sm-2">
+            Name
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Name
+        </dd>
+        <dt class="col-sm-2">
+            Tracks
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.TracksInPlaylist != null && Model.TracksInPlaylist.Count() > 0)
+            {
+                @(String.Join(", ", Model.TracksInPlaylist.Select(tp => tp.Track.Name).ToList()))
+            }
+            else
+            {
+                <span>None</span>
+            }
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="ExportPlaylistInfoAsExcelSpreadsheet" asp-route-id="@Model?.Id">Export (Excel spreadsheet)</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
